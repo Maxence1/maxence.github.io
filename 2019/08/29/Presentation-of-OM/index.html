@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!--Description-->
+  
+  <meta name="description" content="This is a blog with my daily thinks.">
+  
+
+  <!--Author-->
+  
+  <meta name="author" content="Pengda Feng">
+  
+
+  <!--Open Graph Title-->
+  
+      <meta property="og:title" content="Presentation of OM">
+  
+  <!--Open Graph Description-->
+  
+      <meta property="og:description" content="This is a blog with my daily thinks.">
+  
+  <!--Open Graph Site Name-->
+  <meta property="og:site_name" content="The IT Crowd">
+  <!--Type page-->
+  
+      <meta property="og:type" content="article">
+  
+  <!--Page Cover-->
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <!-- Title -->
+  
+  <title>Presentation of OM - The IT Crowd</title>
+
+
+  <link rel="shortcut icon" href="https://hexo.io/icon/favicon-96x96.png">
+
+  <!-- Custom CSS/Sass -->
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!----------------------------
+  https://github.com/GallenHu/hexo-theme-Daily
+
+ _____            _   _
+|  __ \          (_) | |
+| |  | |   __ _   _  | |  _   _
+| |  | |  / _` | | | | | | | | |
+| |__| | | (_| | | | | | | |_| |
+|_____/   \__,_| |_| |_|  \__, |
+                          __/ |
+                         |___/
+
+    --------------------------->
+
+</head>
+
+
+<body>
+
+  <!-- Nav -->
+  <header class="site-header">
+  <div class="header-inside">
+    <div class="logo">
+      <a href="/" rel="home">
+        
+      </a>
+    </div>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse">
+        <ul class="navbar-nav">
+          
+          
+            <li>
+              <a href="/.">
+                
+                  Home
+                
+              </a>
+            </li>
+          
+            <li>
+              <a href="/archives">
+                
+                  Archive
+                
+              </a>
+            </li>
+          
+            <li>
+              <a href="/about">
+                
+                  About
+                
+              </a>
+            </li>
+          
+        </ul>
+      </div>
+      <!-- /.navbar-collapse -->
+    </nav>
+    <div class="button-wrap">
+      <button class="menu-toggle">Primary Menu</button>
+    </div>
+  </div>
+</header>
+
+
+  <!-- Main Content -->
+  <div class="content-area">
+  <div class="post">
+    <!-- Post Content -->
+    <div class="container">
+      <article>
+        <!-- Title date & tags -->
+        <div class="post-header">
+          <h1 class="entry-title">
+            Presentation of OM
+            
+          </h1>
+          <p class="posted-on">
+          2019-08-29
+          </p>
+          <div class="tags-links">
+            
+              
+            
+          </div>
+        </div>
+        <!-- Post Main Content -->
+        <div class="entry-content has_line_number">
+          <p>ok. we are gonna to prepare a presentation for @kiruba.duraisamy and @ravi.vats<br>also for these engineers who are still unfamiliar with the whole systems :troll:</p>
+<p>each sub-team are gonna to nominate the newest joiners (exclude kiruba and ravi). (edited)<br>the presentation for each sub-team needs to cover two parts.</p>
+<figure class="highlight plain"><figcaption><span>team part</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">what the team is?</span><br><span class="line">what the services the team is handling?</span><br><span class="line">what the architecture and potential future vision for the team?</span><br><span class="line"></span><br><span class="line">2. self part</span><br><span class="line">who am I?</span><br><span class="line">what project am I working on?</span><br><span class="line">how long the project is gonna to launch?</span><br><span class="line">after launch, what metrics I plan to monitor the check the impact?</span><br></pre></td></tr></table></figure>
+
+<p>depends on the manager and team style, you can get the slides and the presentation manuscript in whatever way you guys can help the presenter (edited)<br>in the end, we are gonna to vote the best, and the worst team.<br>the manager from the worst team need to treat tea for all of us.</p>
+<ol>
+<li><p>team Part</p>
+</li>
+<li><p>1 what the team is?<br>  OM team is like a neural center to all order-related components. it will handle the state transfer between states.<br>  As we all know that our food service is meanly composed of 3 roles: pax, dax, and mex. om will manage the order flow.</p>
+<p>  if we divide coarsely the mean events. there are 2 parts: preparationTask and DeliveryTask.and for each type of task, there are:<br>  create_task, cancel_task, complete_task, force_cancel_task, force_complete_task. and there are another 2 endpoints which is little different: push_order_update and report_task_update.</p>
+</li>
+</ol>
+<p>1.2 what the services the team is handling?<br>food-order-manager<br>let’s figure out how things works.</p>
+<p>======================<br>创建订单<br>    first, when a pax want to make un order, after he has carefully chose the items he want, he might to place the order. -&gt; create_order.<br>    1. generate OrderID<br>    2. check the MCA setting &amp; ongoing order<br>    3. Pre-order-built validation<br>        check is merchant open?<br>        check merchant snapshot<br>        check merchant consistency<br>        check merchant and pax are in same country<br>    4. Generate order snapshot V2<br>    5. getDistanceAndETAV2 (ChronosService)<br>    6. paysiAuthValidation (paysi)<br>        Order create的时候Auth是预授权，也就是冻结<br>        order结束的时候会capture，就真的把钱拿过来了<br>    7. Post-order-built validation<br>        check radius<br>        check support pay by cash<br>        check support payment<br>        block leadsgen order if app version is older/ accept cash<br>        check cancel throttle<br>        check order value limit<br>        consumeCampaign<br>        promo hold<br>        paysiAuth<br>    8. generateShortNumber<br>    9. processor.SaveOrder</p>
+<pre><code>1. FoodDataService.CreateInnerOrder(ctx, order)
+2. attemptTransition(ctx, stateCtx, statemachine.EvOrderCreate)
+3. IntegrateSM.AddTransition(CreateOrderTag, StNew, EvOrderCreate, OnCreate, StAllocating, StFailed)
+4. doCreateFPT(ctx, order)
+    1. external.FPIService.CreateTask
+        1. grab:    config.FPTServiceClient.CreateTask
+            data.NewTaskStore(config.FoodDataServiceClient).CreateTask
+        2. partner: config.FoodPartnerAPIClient.CreateOrder
+5. notify.AsyncPushNotificationToPAX</code></pre><p>======================<br>商家自动接单<br>    when finished create an order, we will check if this merchant is auto_accepted<br>    -&gt; FPT UpdateTask(accept_task) -&gt; …</p>
+<p>======================<br>商家接单<br>    After we created an order, the next thing is waiting for merchant to accept this order.<br>    reportTaskUpdate to OM that he has accepted this order:</p>
+<pre><code>FPT stateMachine 
+Partner: 
+    Accepted: external.FPIClient.ReportTaskUpdate -&gt; 更新partnerPT表 -&gt; OM reportTaskUpdate
+    Rejected
+    FindDriver/Collected/Delivered
+
+Grab:
+       mex API AcceptOrder -&gt; mex API UpdateTask 
+    -&gt; FPT smPreparationTaskPool.AddTransition(logAccepted, stNew, EvAccept, accept, stAccept) 
+    -&gt; FPI reportTaskUpdate 
+    -&gt; OM reportTaskUpdate —&gt; sendTransitNotification -&gt; IntegrateSM.AddTransition(FptInProgressTag, StAllocating, EvFPTInProgress, OnOrderInPrepare, StAllocating, StOrderInPrepare, StFailed) —&gt; doCreateFDT 
+    -&gt; FDI CreateTask -&gt; dalClient.CreatePartnerDeliveryTask
+    -&gt; FDT CreateDeliveryTask(GRAB) -&gt; dal.Client.CreateFoodDeliveryTask -&gt; dataservice createDeliveryTask</code></pre><p>=======================<br>商家complete订单<br>    1. FPT force-complete task<br>        -&gt;FPT StateMachine smPreparationTaskPool.AddTransition(logCompleted, stAccept, EvComplete, complete, stComplete)<br>        -&gt; FPI reportTaskUpdate<br>        -&gt; OM reportTaskUpdate<br>        -&gt; sendTransitNotification<br>        -&gt; updateTaskStateInOrder<br>        -&gt; IntegrateSM.AddTransition(FptCompleteTag, StOrderInPrepare, EvFPTCompleted, OnOrderExecuting, StOrderExecuting)<br>        -&gt; OM state = OnOrderExecuting</p>
+<p>======================<br>骑手接单</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>待理清楚<br>一旦商家接单， 在执行完FPT的状态机之后，会defer<br>.ForwardFDTToFPI(ctx, &amp;common.FDTToFPIReq{<br>            Kind:            preparationtask.KindTaskIntegrated,<br>            TaskID:          prepareTaskID,<br>            OrderID:         order.OrderID,<br>            FromState:       updateMsg.FromState,<br>            ToState:         updateMsg.NewState,<br>            FinalState:      order.FinalState,<br>            DriverID:        driverID,<br>            ReallocateCount: updateMsg.ReallocateCount,<br>            PartnerID:       meta.PartnerID,<br>        })</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code>external.FPIService.PushOrderUpdate(ctx,
+preparationtask.KindTaskIntegrated,
+buildMessage(ctx, &amp;fptdto.PushOrderUpdateMsg{
+    DriverID:        req.DriverID,
+    ReallocateCount: req.ReallocateCount,
+    FinalState:      req.FinalState,
+    }),
+)
+
+FPTPushOrderUpdate(ctx, kind, taskID, orderID, fromState, toState, message)
+updateDeliveryState -&gt; sender.V1.SendUpdateDeliveryTask(childCtx, taskID, fdState, message)  // fdstate = accept
+-&gt; SendUpdateDeliveryTask
+-&gt;</code></pre><p>再讲讲<br>OM的Event。 FPT的EVENT， 状态的变化的不同，对比<br>delivery task 的状态:<br>preparation task 的状态: INIT -&gt; NEW -&gt; ACCEPT -&gt; COMPLETED   Canceled, expired<br>order的状态：</p>
+<p>1.3 what the architecture and potential future vision for the team?</p>
+<ol start="2">
+<li>self part</li>
+<li>1 who am I?</li>
+</ol>
+<p>2.2 what project am I working on?</p>
+<p>2.3 how long the project is gonna launch</p>
+<p>2.4 after launch, what metrics I plan to monitor the check the impact?</p>
+
+        </div>
+      </article>
+    </div>
+    <!-- Comments -->
+    <div class="container">
+      
+<section id="comment">
+  <!-- <h1 class="title">Comments</h1> -->
+
+  
+</section>
+
+
+    </div>
+    <!-- Pre or Next -->
+    <div class="nav-links">
+      
+        <div class="nav-previous">
+          <a href="/2019/08/29/数据库问题/" rel="prev"><span class="meta-arraw meta-arraw-left"></span> Older Posts</a>
+        </div>
+      
+      
+        <div class="nav-next">
+          <a href="/2019/08/29/concurrency/" rel="prev">Newer Posts <span class="meta-arraw meta-arraw-right"></span></a>
+        </div>
+      
+    </div>
+
+  </div>
+</div>
+
+
+  <!-- Footer -->
+  <!-- Footer-widgets -->
+<div class="footer-widgets">
+  <div class="row inside-wrapper">
+    <div class="col-1-3">
+      <aside>
+        <h1 class="widget-title">About</h1>
+        <div class="custom-widget-content">
+          
+          <p>All Rights are reserved by You</p>
+        </div>
+      </aside>
+    </div>
+    <div class="col-1-3">
+      <aside>
+        <h1 class="widget-title">Contact</h1>
+        <div class="widget-text">
+          
+            
+              <a href="https://github.com/maxence1" class="icon icon-github" target="_blank">github</a>
+            
+              <a href="http://weibo.com/maxencius" class="icon icon-weibo" target="_blank">weibo</a>
+            
+              <a href="maxence.feng@gmail.com" class="icon icon-mail" target="_blank">mail</a>
+            
+          
+        </div>
+      </aside>
+    </div>
+    <div class="col-1-3">
+      <aside>
+        <h1 class="widget-title">Search</h1>
+        <div class="widget-text">
+          <form onSubmit="return appDaily.submitSearch('')">
+            <p>
+              <input type="text" placeholder="search..." id="homeSearchInput">
+            </p>
+            <!-- <input type="submit" value="GO"> -->
+          </form>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+<!-- Footer -->
+<footer class="site-info">
+  <p>
+    <span>The IT Crowd &copy; 2019</span>
+    
+      <span class="split">|</span>
+      <span>Powered by <a href="https://hexo.io/">Hexo</a> with Theme Daily</span>
+    
+  </p>
+</footer>
+
+
+  <!-- After footer scripts -->
+  <!-- scripts -->
+<script src="/js/app.js"></script>
+
+
+
+
+
+</body>
+
+</html>

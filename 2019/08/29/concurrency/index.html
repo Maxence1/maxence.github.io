@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!--Description-->
+  
+  <meta name="description" content="This is a blog with my daily thinks.">
+  
+
+  <!--Author-->
+  
+  <meta name="author" content="Pengda Feng">
+  
+
+  <!--Open Graph Title-->
+  
+      <meta property="og:title" content="concurrency">
+  
+  <!--Open Graph Description-->
+  
+      <meta property="og:description" content="This is a blog with my daily thinks.">
+  
+  <!--Open Graph Site Name-->
+  <meta property="og:site_name" content="The IT Crowd">
+  <!--Type page-->
+  
+      <meta property="og:type" content="article">
+  
+  <!--Page Cover-->
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <!-- Title -->
+  
+  <title>concurrency - The IT Crowd</title>
+
+
+  <link rel="shortcut icon" href="https://hexo.io/icon/favicon-96x96.png">
+
+  <!-- Custom CSS/Sass -->
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!----------------------------
+  https://github.com/GallenHu/hexo-theme-Daily
+
+ _____            _   _
+|  __ \          (_) | |
+| |  | |   __ _   _  | |  _   _
+| |  | |  / _` | | | | | | | | |
+| |__| | | (_| | | | | | | |_| |
+|_____/   \__,_| |_| |_|  \__, |
+                          __/ |
+                         |___/
+
+    --------------------------->
+
+</head>
+
+
+<body>
+
+  <!-- Nav -->
+  <header class="site-header">
+  <div class="header-inside">
+    <div class="logo">
+      <a href="/" rel="home">
+        
+      </a>
+    </div>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse">
+        <ul class="navbar-nav">
+          
+          
+            <li>
+              <a href="/.">
+                
+                  Home
+                
+              </a>
+            </li>
+          
+            <li>
+              <a href="/archives">
+                
+                  Archive
+                
+              </a>
+            </li>
+          
+            <li>
+              <a href="/about">
+                
+                  About
+                
+              </a>
+            </li>
+          
+        </ul>
+      </div>
+      <!-- /.navbar-collapse -->
+    </nav>
+    <div class="button-wrap">
+      <button class="menu-toggle">Primary Menu</button>
+    </div>
+  </div>
+</header>
+
+
+  <!-- Main Content -->
+  <div class="content-area">
+  <div class="post">
+    <!-- Post Content -->
+    <div class="container">
+      <article>
+        <!-- Title date & tags -->
+        <div class="post-header">
+          <h1 class="entry-title">
+            concurrency
+            
+          </h1>
+          <p class="posted-on">
+          2019-08-29
+          </p>
+          <div class="tags-links">
+            
+              
+            
+          </div>
+        </div>
+        <!-- Post Main Content -->
+        <div class="entry-content has_line_number">
+          <p>Concurrency<br>Given an input array []string{} of IDs, you need to call a function Get(id) to get the details of these IDs and return the result as a map[string]*detail . Write a function to achieve this concurrently (as getting one by one is too inefficient)</p>
+<p>1.<br>func Get(ctx context.Context, id string) (*Detail, error) {<br>    // assume implementation has been provided to you<br>   //  you can call this function directly<br>}</p>
+<p>func GetAll(ctx context.Context, ids []string) (map[string]<em>Detail, error) {<br>  // TODO<br>  const (<br>      maxConcurrency = 2,<br>      timeout = time.second * 2<br>  )<br>  errMsg := errors.New(“GetAll failed”)<br>  eg :=  concurrencyutils.NewExecutionGroupWithMaxConcurrency(context.Background(), timeout, maxConcurrency)<br>  errChan := make(chan error, len(ids))<br>  var detailMap map[string]</em>Detail</p>
+<p>  for i, each := range ids {<br>      i, each := i, each<br>      err := eg.Go(logTag, func(ctx context.Context) {<br>          detail, tErr := Get(ctx, each)<br>          if tErr != nil {<br>              errChan &lt;- tErr<br>          }<br>          detailMap[each] = detail<br>      }<br>      if err != nil {<br>          return nil, errMsg<br>      }<br>  }<br>  err := eg.WaitForDone()<br>  if err != nil {<br>      return nil, errMsg<br>  }<br>  select {<br>  case err := &lt;-errChan:<br>      return nil, err<br>  default:<br>      if detailMap == nil {<br>          return nil, errMsg<br>      }<br>      return detailMap, nil<br>  }<br>}</p>
+<p>2.<br>// You can edit this code!<br>// Click here and start typing.<br>package main</p>
+<p>import (<br>    “context”<br>    “encoding/json”<br>    “fmt”<br>    “log”<br>    “strings”<br>)</p>
+<p>type Detail struct {<br>    ID string<br>}</p>
+<p>func Get(ctx context.Context, id string) (*Detail, error) {<br>    return &amp;Detail{ID: id}, nil<br>}</p>
+<p>func GetAll(ctx context.Context, ids []string) (map[string]<em>Detail, error) {<br>    ret := map[string]</em>Detail{}<br>    ch := make(chan *Detail)<br>    for _, id := range ids {<br>        go func(id string) {<br>            detail, err := Get(ctx, id)<br>            if err != nil {<br>                log.Print(err)<br>            }<br>            ch &lt;- detail<br>        }(id)<br>    }<br>    for range ids {<br>        detail := &lt;-ch<br>        ret[detail.ID] = detail<br>    }<br>    return ret, nil<br>}</p>
+<p>func main() {<br>    ret, _ := GetAll(context.Background(), strings.Split(“abcedf”, “”))<br>    b, _ := json.Marshal(ret)<br>    fmt.Println(string(b))<br>}</p>
+<p>3.<br>const (<br>    count = 10<br>)</p>
+<p>func Get(ctx context.Context, id string) (*Detail, error) {<br>    // assume implementation has been provided to you<br>   //  you can call this function directly<br>}</p>
+<p>func GetAll(ctx context.Context, ids []string) (map[string]<em>Detail, error) {<br>  var array [len(ids)]</em>Detail<br>  c := make(chan int, count)</p>
+<pre><code>for i := 0; i &lt; count; i++ {
+    go func(id int) {
+        for j := id; j &lt; len(ids); j = j + count {
+            array[j] = Get(ctx, id)
+        }
+        c &lt;- 1
+    }(i)
+}
+
+for i := 0; i &lt; count; i++ {
+    &lt;-c
+}</code></pre><p>}</p>
+<p>4.<br>package main</p>
+<p>import (<br>  “context”<br>  “sync”<br>)</p>
+<p>type Detail struct {</p>
+<p>}</p>
+<p>type BatchDetail struct {<br>  lock    <em>sync.RWMutex<br>  details map[string]</em>Detail<br>}<br>func Get(ctx context.Context, id string) (*Detail, error) {<br>  // assume implementation has been provided to you<br>  //  you can call this function directly<br>  return &amp;Detail{}, nil<br>}</p>
+<p>func GetOne(ctx context.Context, batchDetail *BatchDetail, id string, ch chan error) {<br>  got, err := Get(ctx, id)<br>  if err != nil {<br>     ch &lt;- err<br>     return<br>  }<br>  batchDetail.lock.Lock()<br>  batchDetail.details[id] = got<br>  batchDetail.lock.Unlock()<br>}</p>
+<p>func GetAll(ctx context.Context, ids []string) (map[string]<em>Detail, error) {<br>  // TODO<br>  batchDetail := &amp;BatchDetail{<br>     details: make(map[string]</em>Detail,0),<br>     lock:    new(sync.RWMutex),<br>  }<br>  for _, id := range ids {<br>     ch := make(chan error, 1)<br>     go GetOne(ctx, batchDetail, id, ch)<br>     err := &lt;- ch<br>     if err != nil {<br>        return nil, err<br>     }<br>  }<br>  return batchDetail.details, nil<br>}</p>
+<p>5.<br>func Get(ctx context.Context, id string) (*Detail, error) {<br>    // assume implementation has been provided to you<br>   //  you can call this function directly<br>}</p>
+<p>func GetAll(ctx context.Context, ids []string) (map[string]*Detail, error) {<br>  var wg sync.WaitGroup</p>
+<p>  wg.Add(len(ids))<br>  detailResults := make([]DetailResult, len(ids))</p>
+<p>  for index, id := range ids {<br>     go func(indx int, id string){<br>        defer wg.Done()<br>        detail, _ := Get(ctx, id)<br>        detailResults[indx] = DetailResult{<br>           key: id,<br>           val: detail,<br>        }<br>     }(index, id)<br>  }<br>  wg.Wait()</p>
+<p>  result := map[string]*Detail{}<br>  for _, d := range detailResults {<br>     result[d.key] = d.val<br>  }</p>
+<p>  return result, nil<br>}</p>
+<p>6.<br>type Detail struct {}</p>
+<p>func Get(ctx context.Context, id string) (*Detail, error) {<br>    //<br>    //<br>    return &amp;Detail{}, nil<br>}</p>
+<p>func GetAll(ctx context.Context, ids []string) (map[string]*Detail, error) {<br>    length := len(ids)<br>     if length &lt;= 0 {<br>         return nil, errors.New(“length is invalid. “)<br>     }</p>
+<pre><code>res := make(map[string]*Detail)
+
+ch0 := make(chan string, 0)
+ch1 := make(chan string, 0)
+ch2 := make(chan string, 0)
+ch3 := make(chan string, 0)
+for k, v := range ids {
+    switch k%4 {
+    case 0:
+        ch0 &lt;-v
+    case 1:
+        ch1 &lt;- v
+    case 2:
+        ch2 &lt;- v
+    case 3:
+        ch3 &lt;- v
+
+    }
+}
+
+go func() {
+    for v := range ch0 {
+        detail, _ := Get(context.Background(), v)
+        res[v] = detail
+    }
+}()
+
+go func() {
+    for v := range ch1 {
+        detail, _ := Get(context.Background(), v)
+        res[v] = detail
+    }
+}()
+
+go func() {
+    for v := range ch2 {
+        detail, _ := Get(context.Background(), v)
+        res[v] = detail
+    }
+}()
+
+go func() {
+    for v := range ch3 {
+        detail, _ := Get(context.Background(), v)
+        res[v] = detail
+    }
+}()
+
+return res, nil</code></pre><p>}</p>
+<p>7.<br>package wuface<br>​<br>import (<br>    “context”<br>    “errors”<br>    “sync”<br>)<br>​<br>// Given an input array []string{} of IDs, you need to call a function Get(id) to get the details of these IDs and return the result as a map[string]<em>detail .<br>// Write a function to achieve this concurrently (as getting one by one is too inefficient)<br>​<br>// Detail …<br>type Detail struct {<br>    ID string<br>}<br>​<br>// Get Details by ID<br>func Get(ctx context.Context, id string) (</em>Detail, error) {<br>    return &amp;Detail{<br>        ID: id,<br>    }, nil<br>}<br>​<br>// GetAll Details by IDs<br>// Assume no duplicate id<br>func GetAll(ctx context.Context, ids []string) (map[string]<em>Detail, error) {<br>    if len(ids) == 0 {<br>        return nil, errors.New(“empty ids”)<br>    }<br>​<br>    var waitGroup sync.WaitGroup<br>    var detailsMap sync.Map<br>    for _, id := range ids {<br>        waitGroup.Add(1)<br>        go func(id string) {<br>            detail, err := Get(ctx, id)<br>            if err != nil {<br>                return<br>            }<br>            detailsMap.Store(id, detail)<br>            waitGroup.Done()<br>        }(id)<br>    }<br>    waitGroup.Wait()<br>​<br>    details := make(map[string]</em>Detail, len(ids))<br>    detailsMap.Range(func(k, v interface{}) bool {<br>        details[k.(string)] = v.(*Detail)<br>        return true<br>    })<br>    return details, nil<br>}</p>
+<p>8.<br>result := make(map[string]*Details)<br>strcut payload {<br>    id string<br>    data *Detail<br>}<br>c := make(chan payload, 5)<br>for _, s range ids {<br>   go func(s string, co chan&lt;- payload) {<br>       co &lt;- payload{s, Get(context.background(), s)}<br>   }(s, c)<br>}<br>for data range c {<br>    result[d.id] = d.data<br>}</p>
+<p>9.<br>func GetAll(ctx context.Context, ids []string) (map[string]<em>Detail, error) {<br>    // TODO<br>    eg := gconcurrent.NewExecutionGroup()<br>    details := map[string]</em>Detail{}<br>    errs := make([]error, len(ids))</p>
+<pre><code>for i, id := range ids {
+    eg.Go(fmt.Sprintf(&quot;load id: %s&quot;, id), func(idx int, id string) func() {
+        return func() {
+            detail, err := Get(ctx, id)
+            if err != nil {
+                // add log ...
+                errs[idx] = err
+                return
+            }
+            details[id] = detail
+        }
+    }(i, id))
+}
+
+if errEg := eg.WaitForDone(5 * time.Second); errEg != nil {
+    logger.Warn(ctx, &quot;load timeout, err is %+v&quot;, errEg)
+    return nil, errEg
+}
+
+for _, err := range errs {
+    if err != nil {
+        return nil, err
+    }
+}
+
+return details, nil</code></pre><p>}</p>
+<p>10.<br>type Detail struct {<br>    ID string<br>}<br>func Get(ctx context.Context, id string) (<em>Detail, error) {<br>    //you can call this function directly<br>    time.Sleep(time.Second * 3)<br>    return &amp;Detail{ID: id}, nil<br>}<br>func GetAll(ctx context.Context, ids []string) (map[string]</em>Detail, error) {<br>    var swg sync.WaitGroup<br>    var mutex sync.Mutex<br>    idslen := len(ids)<br>    result := make(map[string]*Detail, idslen)<br>    for _, value := range ids {<br>        swg.Add(1)<br>        go func(v string) {<br>            defer swg.Done()<br>            res, err := Get(ctx, v)<br>            if err != nil {<br>                fmt.Println(v, “ error”)<br>                return<br>            }<br>            mutex.Lock()<br>            defer mutex.Unlock()<br>            result[v] = res<br>        }(value)<br>    }<br>    swg.Wait()<br>    return result, nil<br>}</p>
+<p>11.<br>import    “github.com/orcaman/concurrent-map”</p>
+<p>func GetALL(ctx Context, ids []string) (map[string]*Detail, error) {<br>res := cmap.New()<br>    for i := 0; i &lt; len(ids); i = i + 1000 {<br>        go putInMap(ctx, ids, i, &amp;res)<br>    }<br>    return res<br>}</p>
+<p>func putInMap(ctx Context, ids []String, start int, res <em>map[string]</em>Detai) {</p>
+<pre><code>for i := start; i &lt; 1000; i++ {
+    res.set(ids[i], Get(ids[i]);</code></pre><p>}<br>}</p>
+<p>12.<br>func Get(ctx context.Context, id string) (*Detail, error) {<br>    // assume implementation has been provided to you<br>    //  you can call this function directly<br>    return nil,nil<br>}</p>
+<p>type Detail struct{<br>    name string<br>    age int<br>}<br>var wg sync.WaitGroup<br>var mux sync.Mutex<br>func GetAll(ctx context.Context, ids []string) (map[string]<em>Detail, error) {<br>    var ret=map[string]</em>Detail{}<br>    for <em>,id := range ids{<br>        wg.Add(1)<br>        go func(ctx context.Context,id string) {<br>            defer wg.Done()<br>            detail,</em>:=Get(ctx,id)<br>            mux.Lock()<br>            ret[id]=detail<br>            mux.Unlock()<br>        }(ctx,id)<br>    }<br>    wg.Wait()<br>    return ret,nil<br>}</p>
+<p>13.<br>package main</p>
+<p>import (<br>    “fmt”<br>    “strconv”<br>    “sync”<br>    “time”<br>)</p>
+<p>type Detail struct {<br>    Name string<br>}</p>
+<p>type SafeMap struct {<br>    Map map[string]*Detail<br>    sync.RWMutex<br>}</p>
+<p>func (sm *SafeMap) set(key string, value *Detail) {<br>    sm.Lock()<br>    sm.Map[key] = value<br>    sm.Unlock()<br>}</p>
+<p>func (sm <em>SafeMap) get(key string) (</em>Detail, bool) {<br>    sm.RLock()<br>    value, ok := sm.Map[key]<br>    sm.RUnlock()<br>    return value, ok<br>}</p>
+<p>func Get(id string) *Detail {<br>time.Sleep(5 * time.Millisecond)<br>    return &amp;Detail{<br>        Name: id,<br>    }<br>}</p>
+<p>func GetAll(ids []string) map[string]<em>Detail {<br>    sm := new(SafeMap)<br>    sm.Map = make(map[string]</em>Detail)<br>    var wg sync.WaitGroup<br>    for _, id := range ids {<br>        wg.Add(1)<br>        go func(id string) {<br>            defer wg.Done()<br>            if _, ok := sm.get(id); !ok {<br>                sm.set(id, Get(id))<br>            }<br>        }(id)<br>    }<br>    wg.Wait()<br>    return sm.Map<br>}</p>
+<p>func GetAll2(ids []string) map[string]<em>Detail {<br>    details := make([]</em>Detail, len(ids))<br>    var wg sync.WaitGroup<br>    for i, id := range ids {<br>        wg.Add(1)<br>        go func(i int, id string) {<br>            defer wg.Done()<br>            details[i] = Get(id)<br>        }(i, id)<br>    }<br>    wg.Wait()<br>    results := map[string]*Detail{}<br>    for i, id := range ids {<br>        results[id] = details[i]<br>    }<br>    return results<br>}</p>
+<p>func TestResult(tests map[string]*Detail) bool {<br>    for k, v := range tests{<br>        if k != v.Name {<br>            return false<br>        }<br>    }<br>    return true<br>}</p>
+<p>func main() {<br>    t := make([]string, 0, 100000)<br>    for i := 0; i &lt; 100000; i++ {<br>        t = append(t, strconv.Itoa(i))<br>    }<br>    t1 := time.Now()<br>    res := GetAll(t)<br>    fmt.Println(time.Since(t1))<br>    fmt.Println(len(res))<br>    fmt.Println(TestResult(res))</p>
+<pre><code>t2 := time.Now()
+res1 := GetAll2(t)
+fmt.Println(time.Since(t2))
+fmt.Println(len(res1))
+fmt.Println(TestResult(res1))</code></pre><p>}</p>
+<ol start="14">
+<li>type Detail_ID struct {<br>detail *Detail<br>id     string<br>}</li>
+</ol>
+<p>func GetAll(ctx context.Context, ids []string) (map[string]<em>Detail, error) {<br>    // TODO<br>    count := len(ids)<br>    if count &lt; 1 {<br>        return nil, nil<br>    }<br>    c1 := make(chan Detail_ID,count)<br>    c2 := make(chan error)<br>    result := make(map[string]</em>Detail)<br>    defer func() {<br>        go func() {<br>            for i := 0; i &lt; count-len(result);i++ {<br>                &lt;-c1<br>            }<br>            close(c1)<br>            close(c2)<br>        }()<br>    }()</p>
+<pre><code>for i := 0; i &lt; count; i++ {
+    go func(ind int) {
+        d,e := Get(ctx,ids[ind])
+        c1 &lt;- Detail_ID{d,ids[ind]}
+        c2 &lt;- e
+    }(i)
+    select {
+    case d := &lt;-c1:
+        result[d.id] = d.detail
+    case e := &lt;-c2:
+        return nil,e
+    }
+}
+return result,nil</code></pre><p>}</p>
+<ol start="15">
+<li>package main</li>
+</ol>
+<p>import (<br>  “context”<br>  “fmt”<br>  “sync”<br>  “time”<br>)</p>
+<p>type Detail struct {<br>  id string<br>  name string<br>  age int64<br>}</p>
+<p>var lock = &amp;sync.Mutex{}</p>
+<p>func main() {<br>  details, _ := GetAll(context.Background(), []string{“1”, “2”, “3”, “4”, “5”, “6”, “7”, “8”, “9”, “10”})<br>  for id, detail := range details {<br>     fmt.Printf(“%s : %v\n”, id, detail)<br>  }<br>}</p>
+<p>func Get(ctx context.Context, id string) (*Detail, error) {<br>  // assume implementation has been provided to you<br>  //  you can call this function directly<br>  time.Sleep(time.Second * 3)<br>  return &amp;Detail{<br>     id: id,<br>     name: fmt.Sprintf(“user_%s”, id),<br>     age: 10,<br>  }, nil<br>}</p>
+<p>func GetAll(ctx context.Context, ids []string) (map[string]*Detail, error) {</p>
+<p>  details := make(map[string]*Detail)<br>  wg := &amp;sync.WaitGroup{}<br>  for _, id := range ids {<br>     wg.Add(1)<br>     go setResult(ctx, id, details, wg)<br>  }<br>  wg.Wait()<br>  return details, nil<br>}</p>
+<p>func setResult(ctx context.Context, id string, details map[string]*Detail, wg *sync.WaitGroup) {<br>  detail, err := Get(ctx, id)<br>  if err != nil {<br>     //logging<br>     wg.Done()<br>     return<br>  }<br>  lock.Lock()<br>  details[id] = detail<br>  lock.Unlock()<br>  wg.Done()<br>}</p>
+<p>16.<br>package main</p>
+<p>import (<br>    “context”<br>    “sync”<br>    “time”</p>
+<pre><code>&quot;gitlab.myteksi.net/gophers/go/food/common/concurrencyutils&quot;</code></pre><p>)</p>
+<p>type Detail struct { }</p>
+<p>func Get(ctx context.Context, id string) (*Detail, error) {<br>    // assume implementation has been provided to you<br>    //  you can call this function directly<br>}</p>
+<p>func GetAll(ctx context.Context, ids []string) (map[string]<em>Detail, error) {<br>    var (<br>        wg sync.WaitGroup<br>        resultLock sync.Mutex<br>        result = make(map[string]</em>Detail)<br>        errList = make([]error, len(ids))<br>    )</p>
+<pre><code>for i, id := range ids {
+    i, id := i, id
+    wg.Add(1)
+    go func() {
+        defer wg.Done()
+
+        detail, err := Get(ctx, id)
+        resultLock.Lock()
+        defer resultLock.Unlock()
+
+        if err != nil {
+            errList[i] = err
+            return
+        }
+        result[id] = detail
+    }()
+}
+err := eg.WaitForDone()
+if err != nil {
+    return nil, err
+}
+for _, err := range errList {
+    if err != nil {
+        return nil, err
+    }
+}
+return result, nil</code></pre><p>}</p>
+<p>type resp struct {<br>    id string<br>    err error<br>    result *Detail<br>}</p>
+<p>func GetAllWithContextTimeout(ctx context.Context, ids []string) (map[string]<em>Detail, error) {<br>    var (<br>        result = make(map[string]</em>Detail)<br>        respCh = make(chan resp, len(ids))<br>    )</p>
+<pre><code>eg := concurrencyutils.NewExecutionGroup(ctx, 4 * time.Second)
+for _, id := range ids {
+    id := id
+    eg.Go(&quot;getAll&quot;, func(ctx context.Context) {
+        detail, err := Get(ctx, id)
+        respCh &lt;- resp{
+            id: id,
+            err: err,
+            result: detail,
+        }
+    })
+}
+eg.WaitForDone()
+for  {
+    select {
+    case resp := &lt;-respCh:
+        if resp.err != nil {
+            return nil, resp.err
+        }
+        result[resp.id] = resp.result
+    default:
+        return result, nil
+    }
+}</code></pre><p>}</p>
+<ol start="17">
+<li>func Get(ctx context.Context, id string) (*Detail, error) {<br>// assume implementation has been provided to you<br>//  you can call this function directly<br>}</li>
+</ol>
+<p>func GetAll(ctx context.Context, ids []string) (map[string]*Detail, error) {<br>    type Res struct {<br>        key string<br>        detail *Detail<br>        err error<br>    }<br>    detailChan := make(chan *Res, len(ids))<br>    for _, id := range ids {<br>        lld := id<br>        concurrencyutils.Go(ctx, “getAllWorker”, func(ctx context.Context) error {<br>            detail, err := Get(ctx, lld)<br>            select {<br>            case &lt;-time.After(time.Second):<br>                return fmt.Errorf(“send time out”)<br>            case detailChan &lt;- &amp;Res{<br>                key:    lld,<br>                detail: detail,<br>                err:    err,<br>            }:<br>                return nil<br>            }<br>        }<br>    }</p>
+<pre><code>detailMap := map[string]*Detail{}
+  var err error
+for _ := range ids {
+    select {
+    case &lt;-time.After(100*time.Milliseconds):
+        err = fmt.Errorf(&quot;%v, [%s, err:%s]&quot;, err, &quot;receive time out&quot;)
+        continue
+    case res := &lt;-detailChan:
+        if res != nil {
+            detailMap[res.key] = res.detail
+            if res.err != nil {
+                err = fmt.Errorf(&quot;%v, [%s, err:%v]&quot;, err, res.key, res.err)
+            }
+        }
+    }
+}
+return detailMap, err</code></pre><p>}</p>
+
+        </div>
+      </article>
+    </div>
+    <!-- Comments -->
+    <div class="container">
+      
+<section id="comment">
+  <!-- <h1 class="title">Comments</h1> -->
+
+  
+</section>
+
+
+    </div>
+    <!-- Pre or Next -->
+    <div class="nav-links">
+      
+        <div class="nav-previous">
+          <a href="/2019/08/29/Presentation-of-OM/" rel="prev"><span class="meta-arraw meta-arraw-left"></span> Older Posts</a>
+        </div>
+      
+      
+        <div class="nav-next">
+          <a href="/2019/08/29/Daily-Work-2019-08-29/" rel="prev">Newer Posts <span class="meta-arraw meta-arraw-right"></span></a>
+        </div>
+      
+    </div>
+
+  </div>
+</div>
+
+
+  <!-- Footer -->
+  <!-- Footer-widgets -->
+<div class="footer-widgets">
+  <div class="row inside-wrapper">
+    <div class="col-1-3">
+      <aside>
+        <h1 class="widget-title">About</h1>
+        <div class="custom-widget-content">
+          
+          <p>All Rights are reserved by You</p>
+        </div>
+      </aside>
+    </div>
+    <div class="col-1-3">
+      <aside>
+        <h1 class="widget-title">Contact</h1>
+        <div class="widget-text">
+          
+            
+              <a href="https://github.com/maxence1" class="icon icon-github" target="_blank">github</a>
+            
+              <a href="http://weibo.com/maxencius" class="icon icon-weibo" target="_blank">weibo</a>
+            
+              <a href="maxence.feng@gmail.com" class="icon icon-mail" target="_blank">mail</a>
+            
+          
+        </div>
+      </aside>
+    </div>
+    <div class="col-1-3">
+      <aside>
+        <h1 class="widget-title">Search</h1>
+        <div class="widget-text">
+          <form onSubmit="return appDaily.submitSearch('')">
+            <p>
+              <input type="text" placeholder="search..." id="homeSearchInput">
+            </p>
+            <!-- <input type="submit" value="GO"> -->
+          </form>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+<!-- Footer -->
+<footer class="site-info">
+  <p>
+    <span>The IT Crowd &copy; 2019</span>
+    
+      <span class="split">|</span>
+      <span>Powered by <a href="https://hexo.io/">Hexo</a> with Theme Daily</span>
+    
+  </p>
+</footer>
+
+
+  <!-- After footer scripts -->
+  <!-- scripts -->
+<script src="/js/app.js"></script>
+
+
+
+
+
+</body>
+
+</html>
