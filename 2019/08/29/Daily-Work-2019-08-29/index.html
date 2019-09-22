@@ -170,9 +170,18 @@
 <li>test </li>
 <li>Done: change createTask</li>
 <li>Done: learned test branch on staging</li>
+</ol>
+<p>(*commonpb.FPTOrderSnapshot=mode:”test mode” merchantID:”test merchantID” pax:&lt;paxID:123 paxName:”test pax name” paxPhoneNumber:”18812341234” address:”test address” latitude:34.56 &gt; items:&lt;ID:”itemv2 id” name:”itemv2 name” quantity:20 estimatedPrice:”2000” &gt; items:&lt;ID:”itemv2 id2” name:”itemv2 name2” quantity:20 estimatedPrice:”2000” &gt; fare:&lt;subTotal:121 tax:11 reducedPrice:110 &gt; hasCampaigns:true totalFPTCount:1 ) </p>
+<p>([]interface {}=[mode:”test mode” merchantID:”test merchantID” pax:&lt;paxID:123 paxName:”test pax name” paxPhoneNumber:”18812341234” address:”test address” latitude:34.56 &gt; items:&lt;ID:”itemv2 id” name:”itemv2 name” quantity:20 estimatedPrice:”2000” &gt; items:&lt;ID:”itemv2 id2” name:”itemv2 name2” quantity:20 estimatedPrice:”2000” &gt; fare:&lt;subTotal:121 tax:11 reducedPrice:110 &gt; hasCampaigns:true totalFPTCount:1 ])<br> 1</p>
+<ol start="6">
 <li>chenchen asked questions</li>
 </ol>
-<p>{<br>    “orderID”: “91588599-CYXAANDESGAZN6”,<br>    “bookingCode”: “ADR-91588599-5-1220”,<br>    “state”: “FAILED”,<br>    “tasks”: [<br>        {<br>            “taskID”: “91588599-CYXAANDESGAZN6-PREP-CYXAANDXKA3FNE”,<br>            “taskType”: “PREP”,<br>            “state”: “CANCELLED”,<br>            “cancelBy”: “”,<br>            “reallocateCount”: 0,<br>            “batchID”: “”<br>        }<br>    ],<br>    “driverTrack”: null,<br>    “stateDetail”: “UNALLOCATED”,<br>    “orderType”: “INTEGRATED”,<br>    “priceVersion”: 0,<br>    “acceptedBy”: 3,<br>    “cancelWindow”: null,<br>    “cancelable”: false,<br>    “orderStatusMeta”: {<br>        “prepareETA”: null,<br>        “deliveryOption”: 0<br>    }<br>}</p>
+<p>2019-09-17</p>
+<ol>
+<li>修改test</li>
+<li>修改reportTaskUpdate</li>
+<li>删除GKMM</li>
+</ol>
 <p>prd/endpoint/food_preparation_api_rpc<br>prd/endpoint/food_preparation_api_rpc</p>
 <p>调试的时候加上<br>logger.Info(ctx, “try to auto accept task %s”, taskID)</p>
 
