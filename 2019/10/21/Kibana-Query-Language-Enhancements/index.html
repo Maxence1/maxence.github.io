@@ -18,7 +18,7 @@
 
   <!--Open Graph Title-->
   
-      <meta property="og:title" content="使用乐观锁进行收银台并发收款安全">
+      <meta property="og:title" content="Kibana Query Language Enhancements">
   
   <!--Open Graph Description-->
   
@@ -37,7 +37,7 @@
 
   <!-- Title -->
   
-  <title>使用乐观锁进行收银台并发收款安全 - The IT Crowd</title>
+  <title>Kibana Query Language Enhancements - The IT Crowd</title>
 
 
   <link rel="shortcut icon" href="https://hexo.io/icon/favicon-96x96.png">
@@ -123,21 +123,35 @@
         <!-- Title date & tags -->
         <div class="post-header">
           <h1 class="entry-title">
-            使用乐观锁进行收银台并发收款安全
+            Kibana Query Language Enhancements
             
           </h1>
           <p class="posted-on">
-          2019-09-13
+          2019-10-21
           </p>
           <div class="tags-links">
             
+              
+                <a href="/tags/Kibana/" rel="tag">
+                  Kibana
+                </a>
               
             
           </div>
         </div>
         <!-- Post Main Content -->
         <div class="entry-content has_line_number">
-          <p>只需要在改变价格之后再次检查之前的原始价格就可以了</p>
+          <p><code>response:200</code><br>返回所有返回值为200的log</p>
+<p><code>message:&quot;quick brown fox&quot;</code><br>在某一个field里面搜索某些content.<br><code>message:quick brown fox</code><br>如果没有引号，那么顺序将不再重要</p>
+<p><code>response:200 and extension:php.</code><br>AND </p>
+<p><code>response:200 and extension:php.</code><br>OR.  </p>
+<p><code>response:200 and extension:php or extension:css</code><br>And 优先级高于 OR， 将搜索1&amp;2， 或者3</p>
+<p><code>response:200 and (extension:php or extension:css)</code><br>可以加上括号</p>
+<p><code>response:(200 or 404)</code><br>搜索一个字段的多个结果</p>
+<p><code>not response:200</code><br>NOT</p>
+<p><code>response:200 and not (extension:php or extension:css)</code><br>NOT </p>
+<p><code>response:*</code><br>搜索所有带有reponse field的字段</p>
+<p><code>machine.os:win*</code><br>通配符是可以用的，将搜索所有以win开头的</p>
 
         </div>
       </article>
@@ -156,13 +170,9 @@
     <!-- Pre or Next -->
     <div class="nav-links">
       
-        <div class="nav-previous">
-          <a href="/2019/09/16/Golang-Slice/" rel="prev"><span class="meta-arraw meta-arraw-left"></span> Older Posts</a>
-        </div>
-      
       
         <div class="nav-next">
-          <a href="/2019/09/13/Golang-Concurrency-Workers/" rel="prev">Newer Posts <span class="meta-arraw meta-arraw-right"></span></a>
+          <a href="/2019/10/17/redis-things/" rel="prev">Newer Posts <span class="meta-arraw meta-arraw-right"></span></a>
         </div>
       
     </div>
