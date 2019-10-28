@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!--Description-->
+  
+  <meta name="description" content="This is a blog with my daily thinks.">
+  
+
+  <!--Author-->
+  
+  <meta name="author" content="Pengda Feng">
+  
+
+  <!--Open Graph Title-->
+  
+      <meta property="og:title" content="使用bitmap来记录flag">
+  
+  <!--Open Graph Description-->
+  
+      <meta property="og:description" content="This is a blog with my daily thinks.">
+  
+  <!--Open Graph Site Name-->
+  <meta property="og:site_name" content="The IT Crowd">
+  <!--Type page-->
+  
+      <meta property="og:type" content="article">
+  
+  <!--Page Cover-->
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <!-- Title -->
+  
+  <title>使用bitmap来记录flag - The IT Crowd</title>
+
+
+  <link rel="shortcut icon" href="https://hexo.io/icon/favicon-96x96.png">
+
+  <!-- Custom CSS/Sass -->
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!----------------------------
+  https://github.com/GallenHu/hexo-theme-Daily
+
+ _____            _   _
+|  __ \          (_) | |
+| |  | |   __ _   _  | |  _   _
+| |  | |  / _` | | | | | | | | |
+| |__| | | (_| | | | | | | |_| |
+|_____/   \__,_| |_| |_|  \__, |
+                          __/ |
+                         |___/
+
+    --------------------------->
+
+</head>
+
+
+<body>
+
+  <!-- Nav -->
+  <header class="site-header">
+  <div class="header-inside">
+    <div class="logo">
+      <a href="/" rel="home">
+        
+      </a>
+    </div>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse">
+        <ul class="navbar-nav">
+          
+          
+            <li>
+              <a href="/.">
+                
+                  Home
+                
+              </a>
+            </li>
+          
+            <li>
+              <a href="/archives">
+                
+                  Archive
+                
+              </a>
+            </li>
+          
+            <li>
+              <a href="/about">
+                
+                  About
+                
+              </a>
+            </li>
+          
+        </ul>
+      </div>
+      <!-- /.navbar-collapse -->
+    </nav>
+    <div class="button-wrap">
+      <button class="menu-toggle">Primary Menu</button>
+    </div>
+  </div>
+</header>
+
+
+  <!-- Main Content -->
+  <div class="content-area">
+  <div class="post">
+    <!-- Post Content -->
+    <div class="container">
+      <article>
+        <!-- Title date & tags -->
+        <div class="post-header">
+          <h1 class="entry-title">
+            使用bitmap来记录flag
+            
+          </h1>
+          <p class="posted-on">
+          2019-10-28
+          </p>
+          <div class="tags-links">
+            
+              
+                <a href="/tags/BitMap/" rel="tag">
+                  BitMap
+                </a>
+              
+            
+          </div>
+        </div>
+        <!-- Post Main Content -->
+        <div class="entry-content has_line_number">
+          <p>如果程序中的flag很多， 往往会造成程序很繁琐， 可以使用bitmap来整理flag的同时减少开销</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br></pre></td><td class="code"><pre><span class="line">// Copyright (c) 2012-2019 Grabtaxi Holdings PTE LTD (GRAB), All Rights Reserved. NOTICE: All information contained herein</span><br><span class="line">// is, and remains the property of GRAB. The intellectual and technical concepts contained herein are confidential, proprietary</span><br><span class="line">// and controlled by GRAB and may be covered by patents, patents in process, and are protected by trade secret or copyright law.</span><br><span class="line">//</span><br><span class="line">// You are strictly forbidden to copy, download, store (in any medium), transmit, disseminate, adapt or change this material</span><br><span class="line">// in any way unless prior written permission is obtained from GRAB. Access to the source code contained herein is hereby</span><br><span class="line">// forbidden to anyone except current GRAB employees or contractors with binding Confidentiality and Non-disclosure agreements</span><br><span class="line">// explicitly covering such access.</span><br><span class="line">//</span><br><span class="line">// The copyright notice above does not evidence any actual or intended publication or disclosure of this source code,</span><br><span class="line">// which includes information that is confidential and/or proprietary, and is a trade secret, of GRAB.</span><br><span class="line">//</span><br><span class="line">// ANY REPRODUCTION, MODIFICATION, DISTRIBUTION, PUBLIC PERFORMANCE, OR PUBLIC DISPLAY OF OR THROUGH USE OF THIS SOURCE</span><br><span class="line">// CODE WITHOUT THE EXPRESS WRITTEN CONSENT OF GRAB IS STRICTLY PROHIBITED, AND IN VIOLATION OF APPLICABLE LAWS AND</span><br><span class="line">// INTERNATIONAL TREATIES. THE RECEIPT OR POSSESSION OF THIS SOURCE CODE AND/OR RELATED INFORMATION DOES NOT CONVEY</span><br><span class="line">// OR IMPLY ANY RIGHTS TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO MANUFACTURE, USE, OR SELL ANYTHING</span><br><span class="line">// THAT IT MAY DESCRIBE, IN WHOLE OR IN PART.</span><br><span class="line"></span><br><span class="line">package orderflags</span><br><span class="line"></span><br><span class="line">// refer to https://wiki.grab.com/pages/viewpage.action?pageId=267220706#KTLO:Merge/standardizeddifferentorderflowanditscontrollableflags-OrderModes</span><br><span class="line">const (</span><br><span class="line">	// Cash : cash/cashless order</span><br><span class="line">	Cash = 0</span><br><span class="line">	// Concierge : concierge/integrated order</span><br><span class="line">	Concierge = 1</span><br><span class="line">	// IntegratedAA integrated AA/MA order</span><br><span class="line">	IntegratedAA = 2</span><br><span class="line">	// Mcd Mcdonald Order</span><br><span class="line">	Mcd = 3</span><br><span class="line">	// DominoHackMYSG domino-hack orders in MY/SG</span><br><span class="line">	DominoHackMYSG = 4</span><br><span class="line">	// DominoHackID domino-hack orders in ID</span><br><span class="line">	DominoHackID = 5</span><br><span class="line">	// LeadsGen leads-gen orders</span><br><span class="line">	LeadsGen = 6</span><br><span class="line">	// POS standard partner flow orders</span><br><span class="line">	POS = 7</span><br><span class="line">	// MixMatch for GrabKitchen mix&amp;match orders</span><br><span class="line">	MixMatch = 8</span><br><span class="line">	// SelfPickUp for self pickup orders</span><br><span class="line">	SelfPickUp = 9</span><br><span class="line">	// ScheduledOrder for scheduled orders</span><br><span class="line">	ScheduledOrder = 10</span><br><span class="line">	// Promo for promo orders</span><br><span class="line">	Promo = 11</span><br><span class="line">	// Rewards for rewards orders</span><br><span class="line">	Rewards = 12</span><br><span class="line">	// Campaigns for MFC orders</span><br><span class="line">	Campaigns = 13</span><br><span class="line">	// McdHack for mcd hack orders</span><br><span class="line">	McdHack = 14</span><br><span class="line">	// GeneralPartnerHack for general hack orders</span><br><span class="line">	GeneralPartnerHack = 15</span><br><span class="line">	// LargeOrder for large orders</span><br><span class="line">	LargeOrder = 16</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">const (</span><br><span class="line">	// FeatureCash ...</span><br><span class="line">	FeatureCash = &quot;cash&quot;</span><br><span class="line">	// FeatureCashless ...</span><br><span class="line">	FeatureCashless = &quot;cashless&quot;</span><br><span class="line">	// FeatureConcierge ...</span><br><span class="line">	FeatureConcierge = &quot;concierge&quot;</span><br><span class="line">	// FeatureIntegrated ...</span><br><span class="line">	FeatureIntegrated = &quot;integrated&quot;</span><br><span class="line">	// FeatureIntegratedAA ...</span><br><span class="line">	FeatureIntegratedAA = &quot;integratedAA&quot;</span><br><span class="line">	// FeatureIntegratedMA ...</span><br><span class="line">	FeatureIntegratedMA = &quot;integratedMA&quot;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">// FlagsDict is a dictionary map of features</span><br><span class="line">var FlagsDict = map[uint]string&#123;</span><br><span class="line">	// for Cash/Cashless, concierge/integrated modes, integrated AA/MA</span><br><span class="line">	Mcd:                &quot;Mcdonald&quot;,</span><br><span class="line">	DominoHackMYSG:     &quot;Domino hack MY/SG&quot;,</span><br><span class="line">	DominoHackID:       &quot;Domino hack ID&quot;,</span><br><span class="line">	LeadsGen:           &quot;Leads-gen&quot;,</span><br><span class="line">	POS:                &quot;POS&quot;,</span><br><span class="line">	MixMatch:           &quot;Mix&amp;Match&quot;,</span><br><span class="line">	SelfPickUp:         &quot;Self-pickUp&quot;,</span><br><span class="line">	ScheduledOrder:     &quot;Scheduled Order&quot;,</span><br><span class="line">	Promo:              &quot;Promo&quot;,</span><br><span class="line">	Rewards:            &quot;Rewards&quot;,</span><br><span class="line">	Campaigns:          &quot;Campaigns&quot;,</span><br><span class="line">	McdHack:            &quot;McdHack&quot;,</span><br><span class="line">	GeneralPartnerHack: &quot;GeneralPartnerHack&quot;,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// All is a slice of all order flags</span><br><span class="line">var All = []uint&#123;</span><br><span class="line">	Cash,</span><br><span class="line">	Concierge,</span><br><span class="line">	IntegratedAA,</span><br><span class="line">	Mcd,</span><br><span class="line">	DominoHackMYSG,</span><br><span class="line">	DominoHackID,</span><br><span class="line">	LeadsGen,</span><br><span class="line">	POS,</span><br><span class="line">	MixMatch,</span><br><span class="line">	SelfPickUp,</span><br><span class="line">	ScheduledOrder,</span><br><span class="line">	Promo,</span><br><span class="line">	Rewards,</span><br><span class="line">	Campaigns,</span><br><span class="line">	McdHack,</span><br><span class="line">	GeneralPartnerHack,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// GetFeatureNamesByFlag ...</span><br><span class="line">func GetFeatureNamesByFlag(flags int64) []string &#123;</span><br><span class="line">	ret := []string&#123;&#125;</span><br><span class="line">	if IsSet(flags, Cash) &#123;</span><br><span class="line">		ret = append(ret, FeatureCash)</span><br><span class="line">	&#125; else &#123;</span><br><span class="line">		ret = append(ret, FeatureCashless)</span><br><span class="line">	&#125;</span><br><span class="line">	if IsSet(flags, Concierge) &#123;</span><br><span class="line">		ret = append(ret, FeatureConcierge)</span><br><span class="line">	&#125; else &#123;</span><br><span class="line">		ret = append(ret, FeatureIntegrated)</span><br><span class="line">	&#125;</span><br><span class="line">	if IsSet(flags, IntegratedAA) &#123;</span><br><span class="line">		ret = append(ret, FeatureIntegratedAA)</span><br><span class="line">	&#125; else &#123;</span><br><span class="line">		ret = append(ret, FeatureIntegratedMA)</span><br><span class="line">	&#125;</span><br><span class="line">	for _, feature := range All &#123;</span><br><span class="line">		if IsSet(flags, feature) &#123;</span><br><span class="line">			if fName, ok := FlagsDict[feature]; ok &#123;</span><br><span class="line">				ret = append(ret, fName)</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return ret</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// GetFlags ...</span><br><span class="line">func GetFlags(features []uint) int64 &#123;</span><br><span class="line">	var flags int64</span><br><span class="line">	for _, flag := range All &#123;</span><br><span class="line">		if unitInSlice(flag, features) &#123;</span><br><span class="line">			Set(&amp;flags, flag)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return flags</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Set will set the feature flag on the given flags</span><br><span class="line">func Set(flags *int64, feature uint) &#123;</span><br><span class="line">	*flags |= 1 &lt;&lt; feature</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// Clear will clear the feature flag on the given flags</span><br><span class="line">func Clear(flags *int64, feature uint) &#123;</span><br><span class="line">	*flags &amp;= ^(1 &lt;&lt; feature)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// IsSet will return whether given feature is set on the given flags</span><br><span class="line">func IsSet(flags int64, feature uint) bool &#123;</span><br><span class="line">	return flags&amp;(1&lt;&lt;feature) != 0</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// IsNotSet returns true if the feature is not set</span><br><span class="line">func IsNotSet(flags int64, feature uint) bool &#123;</span><br><span class="line">	return !IsSet(flags, feature)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>解析：<br>开始的时候flag = 0</p>
+<p><code>flag = 0000 0000</code></p>
+<p>*flags |= 1 &lt;&lt; feature</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SET(&amp;flag, 1)</span><br><span class="line">flag        = 0000 0000 </span><br><span class="line">1           = 0000 0001  </span><br><span class="line">1 &lt;&lt; 1      = 0000 0010</span><br><span class="line">flag | 1&lt;&lt;1 = 0000 0010</span><br><span class="line">flag        = 2</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SET(&amp;flag, 2)</span><br><span class="line">flag        = 0000 0000 </span><br><span class="line">1           = 0000 0001  </span><br><span class="line">1 &lt;&lt; 2      = 0000 0100</span><br><span class="line">flag | 1&lt;&lt;2 = 0000 0100</span><br><span class="line">flag        = 4</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SET(&amp;flag, 3)</span><br><span class="line">flag        = 0000 0000 </span><br><span class="line">1           = 0000 0001  </span><br><span class="line">1 &lt;&lt; 2      = 0000 1000</span><br><span class="line">flag | 1&lt;&lt;3 = 0000 1000</span><br><span class="line">flag        = 8</span><br></pre></td></tr></table></figure>
+
+<p>从上面可以看出来， flag如果只能设置一个，那对应的就是2^n<br>但是实际中我们要同时设置若干个flag</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">SET(&amp;flag, 1)</span><br><span class="line">flag        = 0000 0000 </span><br><span class="line">1           = 0000 0001  </span><br><span class="line">1 &lt;&lt; 1      = 0000 0010</span><br><span class="line">flag | 1&lt;&lt;1 = 0000 0010</span><br><span class="line">flag        = 2</span><br><span class="line"></span><br><span class="line">SET(&amp;flag, 2)</span><br><span class="line">flag        = 0000 0010 </span><br><span class="line">1           = 0000 0001  </span><br><span class="line">1 &lt;&lt; 2      = 0000 0100</span><br><span class="line">flag | 1&lt;&lt;2 = 0000 0110</span><br><span class="line">flag        = 4 + 2 = 6</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">SET(&amp;flag, 2)</span><br><span class="line">flag        = 0000 0000 </span><br><span class="line">1           = 0000 0001  </span><br><span class="line">1 &lt;&lt; 2      = 0000 0100</span><br><span class="line">flag | 1&lt;&lt;2 = 0000 0100</span><br><span class="line">flag        = 4</span><br><span class="line"></span><br><span class="line">SET(&amp;flag, 3)</span><br><span class="line">flag        = 0000 0100 </span><br><span class="line">1           = 0000 0001  </span><br><span class="line">1 &lt;&lt; 3      = 0000 1000</span><br><span class="line">flag | 1&lt;&lt;3 = 0000 1100</span><br><span class="line">flag        = 8 + 4 = 12</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">SET(&amp;flag, 1)</span><br><span class="line">flag        = 0000 0000 </span><br><span class="line">1           = 0000 0001  </span><br><span class="line">1 &lt;&lt; 1      = 0000 0010</span><br><span class="line">flag | 1&lt;&lt;1 = 0000 0010</span><br><span class="line">flag        = 2</span><br><span class="line"></span><br><span class="line">SET(&amp;flag, 3)</span><br><span class="line">flag        = 0000 0010 </span><br><span class="line">1           = 0000 0001  </span><br><span class="line">1 &lt;&lt; 3      = 0000 1000</span><br><span class="line">flag | 1&lt;&lt;3 = 0000 1010</span><br><span class="line">flag        = 8 + 2 = 10</span><br></pre></td></tr></table></figure>
+
+<p>所以目前：<br>1  -&gt; flag null<br>2  -&gt; flag 1<br>4  -&gt; flag 2<br>6  -&gt; flag 1 + 2<br>8  -&gt; flag 3<br>10 -&gt; flag 1 + 3<br>12 -&gt; flag 2 + 3<br>14 -&gt; flag 1 + 2 + 3</p>
+<p>可以推理， 如果有flag4存在，它的编号为2^4 = 16, 产生的flag的值肯定都是大于16的。<br>所以bitmap产生的flag，当没有任何一个flag的时候肯定是1，但是只要是存在任意一个flag，那么就应该是2的倍数顺着往上增加的。偶数。</p>
+<p>对于任意一个偶数， 它所代表的flag组合是唯一的吗？<br>14 = 2 + 4 + 6<br>14 = 6 + 8 </p>
+<p>是的，思考它的物理含义，其实就是设置了某一位而已。 所以一定是惟一的。</p>
+<p>比如说flag 1. 只需要看倒数第2个是不是1就行了(最后一个代表0)</p>
+<p>所以也就会衍生出</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// IsSet will return whether given feature is set on the given flags</span><br><span class="line">func IsSet(flags int64, feature uint) bool &#123;</span><br><span class="line">	return flags&amp;(1&lt;&lt;feature) != 0</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+        </div>
+      </article>
+    </div>
+    <!-- Comments -->
+    <div class="container">
+      
+<section id="comment">
+  <!-- <h1 class="title">Comments</h1> -->
+
+  
+</section>
+
+
+    </div>
+    <!-- Pre or Next -->
+    <div class="nav-links">
+      
+      
+        <div class="nav-next">
+          <a href="/2019/10/24/What-is-Unicode/" rel="prev">Newer Posts <span class="meta-arraw meta-arraw-right"></span></a>
+        </div>
+      
+    </div>
+
+  </div>
+</div>
+
+
+  <!-- Footer -->
+  <!-- Footer-widgets -->
+<div class="footer-widgets">
+  <div class="row inside-wrapper">
+    <div class="col-1-3">
+      <aside>
+        <h1 class="widget-title">About</h1>
+        <div class="custom-widget-content">
+          
+          <p>All Rights are reserved by You</p>
+        </div>
+      </aside>
+    </div>
+    <div class="col-1-3">
+      <aside>
+        <h1 class="widget-title">Contact</h1>
+        <div class="widget-text">
+          
+            
+              <a href="https://github.com/maxence1" class="icon icon-github" target="_blank">github</a>
+            
+              <a href="http://weibo.com/maxencius" class="icon icon-weibo" target="_blank">weibo</a>
+            
+              <a href="maxence.feng@gmail.com" class="icon icon-mail" target="_blank">mail</a>
+            
+          
+        </div>
+      </aside>
+    </div>
+    <div class="col-1-3">
+      <aside>
+        <h1 class="widget-title">Search</h1>
+        <div class="widget-text">
+          <form onSubmit="return appDaily.submitSearch('')">
+            <p>
+              <input type="text" placeholder="search..." id="homeSearchInput">
+            </p>
+            <!-- <input type="submit" value="GO"> -->
+          </form>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+<!-- Footer -->
+<footer class="site-info">
+  <p>
+    <span>The IT Crowd &copy; 2019</span>
+    
+      <span class="split">|</span>
+      <span>Powered by <a href="https://hexo.io/">Hexo</a> with Theme Daily</span>
+    
+  </p>
+</footer>
+
+
+  <!-- After footer scripts -->
+  <!-- scripts -->
+<script src="/js/app.js"></script>
+
+
+
+
+
+</body>
+
+</html>
