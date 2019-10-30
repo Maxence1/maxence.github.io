@@ -137,7 +137,8 @@
         </div>
         <!-- Post Main Content -->
         <div class="entry-content has_line_number">
-          <ol>
+          <p>Nice Article<br><a href="https://www.toptal.com/qa/how-to-write-testable-code-and-why-it-matters" target="_blank" rel="noopener">https://www.toptal.com/qa/how-to-write-testable-code-and-why-it-matters</a></p>
+<ol>
 <li><p>在doMock中mock的函数如何进行assertExpectation?<br> doMock函数返回mock句柄， []*mock.Mock{&amp;mockDAL, …}<br> 然后再在最后</p>
  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">expectation := tt.doMock()</span><br><span class="line">for _, a := range expectation &#123;</span><br><span class="line">	a.assertExpectation(t)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>

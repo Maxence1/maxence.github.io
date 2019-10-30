@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!--Description-->
+  
+  <meta name="description" content="This is a blog with my daily thinks.">
+  
+
+  <!--Author-->
+  
+  <meta name="author" content="Pengda Feng">
+  
+
+  <!--Open Graph Title-->
+  
+      <meta property="og:title" content="Don&#39;t just check errors, handle them gracefully">
+  
+  <!--Open Graph Description-->
+  
+      <meta property="og:description" content="This is a blog with my daily thinks.">
+  
+  <!--Open Graph Site Name-->
+  <meta property="og:site_name" content="The IT Crowd">
+  <!--Type page-->
+  
+      <meta property="og:type" content="article">
+  
+  <!--Page Cover-->
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <!-- Title -->
+  
+  <title>Don&#39;t just check errors, handle them gracefully - The IT Crowd</title>
+
+
+  <link rel="shortcut icon" href="https://hexo.io/icon/favicon-96x96.png">
+
+  <!-- Custom CSS/Sass -->
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!----------------------------
+  https://github.com/GallenHu/hexo-theme-Daily
+
+ _____            _   _
+|  __ \          (_) | |
+| |  | |   __ _   _  | |  _   _
+| |  | |  / _` | | | | | | | | |
+| |__| | | (_| | | | | | | |_| |
+|_____/   \__,_| |_| |_|  \__, |
+                          __/ |
+                         |___/
+
+    --------------------------->
+
+</head>
+
+
+<body>
+
+  <!-- Nav -->
+  <header class="site-header">
+  <div class="header-inside">
+    <div class="logo">
+      <a href="/" rel="home">
+        
+      </a>
+    </div>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse">
+        <ul class="navbar-nav">
+          
+          
+            <li>
+              <a href="/.">
+                
+                  Home
+                
+              </a>
+            </li>
+          
+            <li>
+              <a href="/archives">
+                
+                  Archive
+                
+              </a>
+            </li>
+          
+            <li>
+              <a href="/about">
+                
+                  About
+                
+              </a>
+            </li>
+          
+        </ul>
+      </div>
+      <!-- /.navbar-collapse -->
+    </nav>
+    <div class="button-wrap">
+      <button class="menu-toggle">Primary Menu</button>
+    </div>
+  </div>
+</header>
+
+
+  <!-- Main Content -->
+  <div class="content-area">
+  <div class="post">
+    <!-- Post Content -->
+    <div class="container">
+      <article>
+        <!-- Title date & tags -->
+        <div class="post-header">
+          <h1 class="entry-title">
+            Don't just check errors, handle them gracefully
+            
+          </h1>
+          <p class="posted-on">
+          2019-10-31
+          </p>
+          <div class="tags-links">
+            
+              
+                <a href="/tags/Golang/" rel="tag">
+                  Golang
+                </a>
+              
+            
+          </div>
+        </div>
+        <!-- Post Main Content -->
+        <div class="entry-content has_line_number">
+          <p>在golang中一般有三种error handle的方式</p>
+<ol>
+<li>哨兵errorhandle<br>通过判断err是否是一个已知的err<br>example:  IO.EOF<br>对于io包中的copy操作来说，里面大量使用了这种哨兵形式的err handle方式</li>
+</ol>
+<p>如果你决定将哨兵err放进你的public的service的API，这就意味着不管你的代码中出现了什么样的err，都只能出现一种err<br>最好的例子就是io的copy函数，它要么返回空， 要么返回IO.EOF</p>
+<p>但是这样又有一个非常不好的地方， 别的service调用你的函数， 就要引入你的EOF，也就是要import你这个package，往往就会造成import circle</p>
+<ol start="2">
+<li>err types<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">if err, ok := err.(SomeType); ok &#123;...&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>这里的errType是你自己创建的结构体， 实现了err Interface. 例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">type PathError struct &#123;</span><br><span class="line">	Op string</span><br><span class="line">	Path string</span><br><span class="line">	Err error</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func (e *PathError) Error() string &#123;</span><br><span class="line">	return e.Op + e.Path + e.Err.Error()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因为这里的PathError是public的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">err := doSomething</span><br><span class="line"></span><br><span class="line">switch err := err.(type) &#123;</span><br><span class="line">	case nil :</span><br><span class="line">		// call successed</span><br><span class="line">	case *os.PathError:</span><br><span class="line">		// handle PathError specifically</span><br><span class="line">	default:</span><br><span class="line">		// default</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>缺点： 如果一个Interface的定义中约定了要使用某一种特定类型的ErrorType, 那么这个Interface的所有实现都要引入这个ErrType，同样会造成循环引用</p>
+<p>errorType比errorValue(哨兵err)更好，因为它可以提供更多的上下文信息。但是缺点却和errValues一样多。<br>所以同样应该最好不要使用errType. 如果非要用， 最好另它和你的API没有关系</p>
+<ol start="3">
+<li>Opaque Errors<br>这种error handling的方式能够在client和code之间产生最少的耦合</li>
+</ol>
+<p>作为一个调用者，当你去调用某一个函数的时候，你不会知道哪里出错了， 你只知道，我调用成功了或者没成功<br>简单讲， 就是直接把err return出去， 不要去猜这猜那得。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">func fn() error &#123;</span><br><span class="line">	x, err := foo()</span><br><span class="line">	if err != nil &#123;</span><br><span class="line">		return err</span><br><span class="line">	&#125;</span><br><span class="line">	// use x</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但是有些时候这种处理方式也是有局限性的。 比如说我们在investigate newwork activity的时候想要调查一下是什么原因的导致出错了， 然后来决定要不要重试一下。<br>在这种情况下， 比起我们去猜测err是某一种哨兵， 或者err是某一种类型，我们更prefer去猜测err是否implements a peticular behaviour</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">type temporary struct &#123;</span><br><span class="line">	Temporary() bool</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func IsTemporary(err error) bool &#123;</span><br><span class="line">	te, ok := err.(temporary)</span><br><span class="line">	return ok &amp;&amp; te.Temporary()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过将error传入IsTemporory函数，来判断这种情况下是否应该retry。 如果err没有实现temporary接口，那就不是temporary的</p>
+<p>最大的优点就是： 对于上述的所有logic，我们都可以implement它， 而无需引入创建这个err的包，也无需知道error的任何内部type。我们只关注，只对err的behaviour感兴趣</p>
+<p>======== Don’t Just Check Errors, Handle Them Gracefully =============</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">func AuthenticateRequest(r *Request) error &#123;</span><br><span class="line">	err := authenticate(r.User)</span><br><span class="line">	if err != nil &#123;</span><br><span class="line">		return err</span><br><span class="line">	&#125;</span><br><span class="line">	return nil</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码有问题： </p>
+<ol>
+<li>可以直接一行解决</li>
+<li>如果authenticate失败了，我不知道authenticate哪里失败了。 一层一层向上传递之后，最后得出的结论可能就是”No such file or directory”</li>
+</ol>
+<p>改进： add context</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">func AuthenticateRequest(r *Request) error &#123;</span><br><span class="line">	err := authenticate(r.User)</span><br><span class="line">	if err != nil &#123;</span><br><span class="line">		return fmt.Errorf(&quot;authenticate fail: %v&quot;, err)</span><br><span class="line">	&#125;</span><br><span class="line">	return nil</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>经过这样的改进之后，这种写法和  errValue的哨兵err处理方式， 和通过判断type的err处理方式会有矛盾， 因为这里我们将err转换成了一个string，然后添加了一些上下文语句，然后呢又通过errorf， 将它重新变成了一个error，这样就破坏了它的可比较性</p>
+<pre><code>===========================</code></pre><p>结论：<br>github.com/pkg/errors</p>
+<p>这个包只有5个函数，和一些types</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">1. NEW</span><br><span class="line">err := errors.New(&quot;kerboom&quot;)</span><br><span class="line">fmt.Printf(&quot;%v\n&quot;, err)</span><br><span class="line">// output: kerboom</span><br><span class="line"></span><br><span class="line">2. Wrap</span><br><span class="line">err := errors.Wrap(syscall.EBADF, &quot;could not write to stream&quot;)</span><br><span class="line">fmt.Printf(&quot;%v\n&quot;, err)</span><br><span class="line">// output:  could not write to stream: bad file descriptor</span><br><span class="line">// 如果输入的err是nil，那么wrap函数返回的也是nil</span><br><span class="line"></span><br><span class="line">3. NEW (with %+v)  -&gt; with full stack trace</span><br><span class="line">err := errors.New(&quot;kerboom&quot;)</span><br><span class="line">fmt.Printf(&quot;%+v\n&quot;, err)</span><br><span class="line">// output: kerboom</span><br><span class="line">//         /Users/.../.../panic.go</span><br><span class="line"></span><br><span class="line">4. Formatted Variants</span><br><span class="line">func Errorf(format string, args ...interface&#123;&#125;) error</span><br><span class="line">func Wrapf(err error, format string, args ...interface&#123;&#125;) error  </span><br><span class="line"></span><br><span class="line">5. UnWrap Errors</span><br><span class="line">func Cause(err error) error</span><br></pre></td></tr></table></figure>
+
+<p>在实际使用中， 当你需要检查一个err的type或者是value的时候，你不希望检查的是你string errorf之后的err， 要检查本质，所以之前的函数需要加上Cause</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">type temporary struct &#123;</span><br><span class="line">	Temporary() bool</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func IsTemporary(err error) bool &#123;</span><br><span class="line">	te, ok := errors.Cause(err).(temporary)</span><br><span class="line">	return ok &amp;&amp; te.Temporary()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>========== Last Thing: Only Handle Error Once</p>
+<p>比如说一个调用栈， 你在最深层遇到了err，你log记录下来，然后传给上一层<br>上一层同样，log记录下来，然后再往上传<br>到最后发现很多重复的log记录的都是同一个错误</p>
+<p>好的做法是上层使用wrap一层一层的wrap， 这样最后就可以得到一个fullstack</p>
+<p>=========== Annotating errors with errors.Wrap</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">func Write(w io.Write, bug []byte) error &#123;</span><br><span class="line">	_, err := w.Write(bug)</span><br><span class="line">	retunr errors.Wrap(err, &quot;write failed&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这么写的好处就在于不用检查err 是不是nil了</p>
+
+        </div>
+      </article>
+    </div>
+    <!-- Comments -->
+    <div class="container">
+      
+<section id="comment">
+  <!-- <h1 class="title">Comments</h1> -->
+
+  
+</section>
+
+
+    </div>
+    <!-- Pre or Next -->
+    <div class="nav-links">
+      
+      
+        <div class="nav-next">
+          <a href="/2019/10/30/Golang中的Defer/" rel="prev">Newer Posts <span class="meta-arraw meta-arraw-right"></span></a>
+        </div>
+      
+    </div>
+
+  </div>
+</div>
+
+
+  <!-- Footer -->
+  <!-- Footer-widgets -->
+<div class="footer-widgets">
+  <div class="row inside-wrapper">
+    <div class="col-1-3">
+      <aside>
+        <h1 class="widget-title">About</h1>
+        <div class="custom-widget-content">
+          
+          <p>All Rights are reserved by You</p>
+        </div>
+      </aside>
+    </div>
+    <div class="col-1-3">
+      <aside>
+        <h1 class="widget-title">Contact</h1>
+        <div class="widget-text">
+          
+            
+              <a href="https://github.com/maxence1" class="icon icon-github" target="_blank">github</a>
+            
+              <a href="http://weibo.com/maxencius" class="icon icon-weibo" target="_blank">weibo</a>
+            
+              <a href="maxence.feng@gmail.com" class="icon icon-mail" target="_blank">mail</a>
+            
+          
+        </div>
+      </aside>
+    </div>
+    <div class="col-1-3">
+      <aside>
+        <h1 class="widget-title">Search</h1>
+        <div class="widget-text">
+          <form onSubmit="return appDaily.submitSearch('')">
+            <p>
+              <input type="text" placeholder="search..." id="homeSearchInput">
+            </p>
+            <!-- <input type="submit" value="GO"> -->
+          </form>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+<!-- Footer -->
+<footer class="site-info">
+  <p>
+    <span>The IT Crowd &copy; 2019</span>
+    
+      <span class="split">|</span>
+      <span>Powered by <a href="https://hexo.io/">Hexo</a> with Theme Daily</span>
+    
+  </p>
+</footer>
+
+
+  <!-- After footer scripts -->
+  <!-- scripts -->
+<script src="/js/app.js"></script>
+
+
+
+
+
+</body>
+
+</html>
