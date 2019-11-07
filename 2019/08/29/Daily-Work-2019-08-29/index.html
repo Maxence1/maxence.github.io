@@ -207,6 +207,100 @@
 <li>重构FPI reportTaskUpdate -&gt; WIP</li>
 <li>move getDataDog to inner_order.go -&gt; done</li>
 </ol>
+<p>2019.10.31</p>
+<ol>
+<li>必须仔细想一下partnerPTID的来龙去脉<br> addPartnerPTID <a href="https://diff.myteksi.net/D209814" target="_blank" rel="noopener">https://diff.myteksi.net/D209814</a></li>
+</ol>
+<ol start="2">
+<li><p>增加flag</p>
+</li>
+<li><p>增加conflictmap</p>
+</li>
+<li><p>增加datadog 检测有多少conflict</p>
+</li>
+<li><p>STUCK： 增加datadog检测cancel了多少stuck的订单<br> 新开了stg的开关</p>
+</li>
+<li><p>udpate yuhang doc</p>
+</li>
+</ol>
+<ol>
+<li><p>不支持AA -&gt; IntegratedAA = 0, 也就是支持MA</p>
+</li>
+<li><p>不支持MA -&gt; IntegratedAA = 1. 也就是支持AA</p>
+</li>
+<li><p>比如说，mxiMatch不支持MA， 如果出现了MA，就应该报错</p>
+</li>
+</ol>
+<p>// ConflictCheck …<br>func ConflictCheck(features []uint, cType ConflictType) (bool, string) {<br>    for f, cMap := range conflictMap {<br>        if unitInSlice(f, features) {<br>            for sub, ret := range cMap {<br>                if unitInSlice(sub, features) {<br>                    if ret.cType == NoConflict {<br>                        return false, “”<br>                    }<br>                    if ret.cType == cType {<br>                        return true, ret.errReason<br>                    }<br>                }<br>            }<br>        }<br>    }<br>    return false, “”<br>}</p>
+<p>检查feature中同时设置的flags</p>
+<p>它是一个什么样的单   ——&gt; 如果不是AA， 那就是MA<br>      vs<br>它是一个支持什么样的单 -&gt; 如果不支持AA，那就是支持MA</p>
+<p>在设置flag的时候， 表达的是它是一个什么样的单<br>但是在检查conflict的时候，表达的是它支持什么样的单</p>
+<p>那么就有矛盾了， 比如cash来说，我都支持， 但是因为这一单是一个cash的单，所以就设置cash flag</p>
+<p>但是对于MA 、AA， 我需要判断这单是不是，而不是支不支持</p>
+<p>比如这个merchant是groupB的，所以flag里面既有AA也有MA<br>但是在判断订单的时候</p>
+<p>现在LeadsGen的订单是支持MA，不支持AA的。 假如一个LeadsGen商家是GroupB, 那么它的flag就会有AA &amp;&amp; MA。在做conflict检查的时候，即使这个单是MA的，也会因为在ConflictMap中看到AA，会被ban.</p>
+<p>原来的逻辑：<br>对于LeadsGen订单， 是只支持MA，不支持AA的。 如果一个LeadsGen的商家被配成了GroupA/GroupB, flag就会有AA，就会引起conflict</p>
+<p>如果在一个自动接单的商家，下一个只支持手动接单的单子（比如LeadsGen），</p>
+<p>如果在一个手动接单的商家，下一个只支持自动接单的单子， （意思就是我下了，你必须得接单）</p>
+<p>商家AA，order类型只支持MA，那么 conflictMap只要有AA Flag， 就报错</p>
+<p>商家是MA， order类型只支持AA，</p>
+<p>2019.11.1</p>
+<ol>
+<li>fix hasib typo</li>
+<li>add IntegratedMA</li>
+<li>add IntegratedMA datadog tag</li>
+<li>orderFlag hangzong</li>
+<li>delete GKMM unused code</li>
+</ol>
+<p>todo</p>
+<ol>
+<li>搞清楚为什么没有stuckOrder？<br>已经搞清楚了， 是ucm的开关的问题</li>
+</ol>
+<ol start="2">
+<li>搞清楚为什么datadog显示不出来<br>搞清楚了，是logtag的问题。<br>prd 打开了。</li>
+</ol>
+<ol start="3">
+<li><p>搞清楚没什么没有partnerPTID<br>等fix上线之后可以打开1%</p>
+</li>
+<li><p>删除GKMM的ucm</p>
+</li>
+</ol>
+<ol start="5">
+<li>转移datadog的图到OM中<br>done</li>
+</ol>
+<p>2019.11.5</p>
+<ol>
+<li>问问FDT要不要force-cancel<br> -》 DONE</li>
+<li>track一下stuck的order有咩有减少<br> -》 DONE</li>
+<li>重构shortnumber<br> -》 wait chunhui</li>
+<li>stuck 看看FPT怎么回事<br>-》 todo</li>
+<li>研究一下om为什么卡住了<br> -》 todo</li>
+</ol>
+<p>第二点就是 我们对知道怎么处理的flow 要refactor一下 这样比较清楚到底这些flow是怎么工作的</p>
+<p>self-pickup和leads-gen也是有很多switch case在里面 合适的话也可以移动到orderflags里面 让这些switch的逻辑centralise在一个地方 至少比较容易找到</p>
+<p>food-preparation-api / food-delivery-api 那边暂时还不知道想怎样 宇航倾向于以orderflags里的qsrCode为key 每个key对于一个rules&amp;conditions的数据结构把其他的纬度 （self-pickup什么的）放在这个数据结构里来指导fpi fdi要干嘛</p>
+<p>但是你可以从om cashier先入手 把这些特殊的逻辑控制移进去orderflags里 这样别人只需要看这个包就知道我们为这些特殊情况做了什么</p>
+<p>lifu.wu 3:46 PM<br>比如说leads-gen就要发收据 self-pickup就要发收据 之类的</p>
+<p>可能没有om的那么多<br>你可以一个一个过 比如说 self-pickup你就要研究下 how does cashier know whether an order is self-pickup ?<br>然后看看他有没有做什么特殊处理</p>
+<p>11.6</p>
+<ol>
+<li><p>如何将ban的conflict 一个一个rollout</p>
+</li>
+<li><p>添加grab flag             -&gt; 加参数？ 放到前面的位去？</p>
+</li>
+<li><p>改变cash flag 0 ——&gt; 19</p>
+</li>
+<li><p>add util file in orderflag -&gt; WIP</p>
+</li>
+<li><p>填写航总的wiki</p>
+</li>
+<li><p>调查FPT stuck的原因， 检查stuck的趋势<br> 分析了一些可以cancel的。<br> domino hack的单交给OPS去complete，不用管</p>
+</li>
+<li><p>增加百分比cancel(wait for FDT to decide)<br> 添加ucm templete</p>
+</li>
+<li><p>rollout problem  稳定为主</p>
+</li>
+</ol>
 
         </div>
       </article>

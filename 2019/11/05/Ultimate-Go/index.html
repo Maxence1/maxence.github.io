@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!--Description-->
+  
+  <meta name="description" content="This is a blog with my daily thinks.">
+  
+
+  <!--Author-->
+  
+  <meta name="author" content="Pengda Feng">
+  
+
+  <!--Open Graph Title-->
+  
+      <meta property="og:title" content="Ultimate Go">
+  
+  <!--Open Graph Description-->
+  
+      <meta property="og:description" content="This is a blog with my daily thinks.">
+  
+  <!--Open Graph Site Name-->
+  <meta property="og:site_name" content="The IT Crowd">
+  <!--Type page-->
+  
+      <meta property="og:type" content="article">
+  
+  <!--Page Cover-->
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <!-- Title -->
+  
+  <title>Ultimate Go - The IT Crowd</title>
+
+
+  <link rel="shortcut icon" href="https://hexo.io/icon/favicon-96x96.png">
+
+  <!-- Custom CSS/Sass -->
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!----------------------------
+  https://github.com/GallenHu/hexo-theme-Daily
+
+ _____            _   _
+|  __ \          (_) | |
+| |  | |   __ _   _  | |  _   _
+| |  | |  / _` | | | | | | | | |
+| |__| | | (_| | | | | | | |_| |
+|_____/   \__,_| |_| |_|  \__, |
+                          __/ |
+                         |___/
+
+    --------------------------->
+
+</head>
+
+
+<body>
+
+  <!-- Nav -->
+  <header class="site-header">
+  <div class="header-inside">
+    <div class="logo">
+      <a href="/" rel="home">
+        
+      </a>
+    </div>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse">
+        <ul class="navbar-nav">
+          
+          
+            <li>
+              <a href="/.">
+                
+                  Home
+                
+              </a>
+            </li>
+          
+            <li>
+              <a href="/archives">
+                
+                  Archive
+                
+              </a>
+            </li>
+          
+            <li>
+              <a href="/about">
+                
+                  About
+                
+              </a>
+            </li>
+          
+        </ul>
+      </div>
+      <!-- /.navbar-collapse -->
+    </nav>
+    <div class="button-wrap">
+      <button class="menu-toggle">Primary Menu</button>
+    </div>
+  </div>
+</header>
+
+
+  <!-- Main Content -->
+  <div class="content-area">
+  <div class="post">
+    <!-- Post Content -->
+    <div class="container">
+      <article>
+        <!-- Title date & tags -->
+        <div class="post-header">
+          <h1 class="entry-title">
+            Ultimate Go
+            
+          </h1>
+          <p class="posted-on">
+          2019-11-05
+          </p>
+          <div class="tags-links">
+            
+              
+                <a href="/tags/Golang/" rel="tag">
+                  Golang
+                </a>
+              
+            
+          </div>
+        </div>
+        <!-- Post Main Content -->
+        <div class="entry-content has_line_number">
+          <p>1.1 Preparation your mind<br>    现在的程序员要学会做选择，但是如果我们内心没有一个guide，没有一个原则， 我们又怎么去做选择呢。<br>    不要崇拜那些上百万行的代码。<br>    他认为我们不需要一些抽象层，来进行解耦。<br>    硬件作为平台，决定了我们的程序的表现性能。Java那些的base于一个虚拟机，virtual machine。但是go based on a real machine,这是一个很大的优点。</p>
+<pre><code>没有绝对的对与错，而在于我们损失了什么而获得了什么 The cost and the benefit
+我们不能一味的依赖于硬件， 虽然现在有云计算， 但是我们呢还是在致力于减少云计算所需要的机器</code></pre><p>1.2 Productivity VS Performance<br>    性能真的很重要吗？ 所有人都希望性能非常好。<br>    但是如果你真的追求perfermance，你应该去看C<br>    我们应该更加注重profuctivity， It’s always matter more</p>
+<pre><code>这是一种trade off
+Go -&gt; be productive without lossing much perfermance</code></pre><p>1.3 Correctness VS Perfermance<br>    很多人为了optimize，写了很多代码。<br>    right code is correct.<br>    The correctness of the implementation is the most important concern.<br>    Optimization should be done, but not prematurely</p>
+<pre><code>首先我们应该optimize for performance
+然后benchmark， profile
+然后看看是不是够快
+然后决定要不要考虑perfermance</code></pre><p>1.4 Code Review<br>    既然所有的事情都有cost<br>    我们怎么知道我们写的code是optimizing for correctness first<br>    当我们进行review的时候，放在第一位的永远是integrity。<br>    什么是integrity？ we become serious of writing code reliable.</p>
+<pre><code>integrity分成微观和宏观
+
+宏观上， 每一个read， 每一个write， 每一个memory allocation.
+保证每一个operation  Accurate, Consistent, Efficient
+
+我们所写的所有的函数都是用来进行data transformation的
+
+
+在微观上，我们如何实现？我们应该write less code
+
+
+Readability
+每个人读完code应该知道你在干啥
+code不会隐藏他的cost。
+Go 不会写很多的抽象层来隐藏我们在做的事情的cost
+
+Simplicity
+和Readability相反， 它倾向于hide the complexity
+以garbage collector为例子， 它会隐藏如何进行内存分配的complexity
+
+Perfermance</code></pre><ol start="2">
+<li><p>Language Syntax</p>
+<p> 2.1 Variables</p>
+<p> 由于Go有zero value的概念，这个概念非常重要。<br> every variable we create must be initialized. If we don’t specify the initialization ourselves, then it get initialized to its zero value. not saying default, but saying zero.</p>
+<p> 意思就是我们在内存上， 把所有bit设置为0</p>
+<p> C语言的思想就是，由程序员自己来intialize一块他所需要的memory<br> 这就导致了世界上很多的bug都是这样产生的</p>
+<p> 而Go优先设置了这样的一块内存设置为0， 就保证了integrity<br> cost就是多了这步骤，得到了integrity</p>
+<p> Go其实还是有缺点的， 他的缺点就是declare variable 的方式太多了</p>
+</li>
+</ol>
+<pre><code>Consistency GuideLine Should Follow
+1. declare variables that are set to their zero values
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var a int</span><br><span class="line">var a string</span><br><span class="line">var a float64</span><br><span class="line">var a bool</span><br></pre></td></tr></table></figure>
+
+string是手动造出来的， 无论什么语言，都需要一个implementation detail
+GO对于string有一个special的implementation detail of string
+
+What is the cost of string? what is a string type?
+&gt; in fact, string is a 2 word data structure. this structure is going to change it&apos;s size depending on architecture. 
+&gt; In 32 bit machine, this 2 words string, will represent eight bytes.
+这两个word在64位的及其上各自占8byte， 第一个word is a pointer. 第二个word 代表长度
+
+对于一个空的string， pointer被设置为nil，长度被设置为0， 也就是他们的zero value
+
+In Go, we consider strings that is set to its zero value, to be empty
+
+We create *Values* in Go, not instance, not object.
+
+2. 
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">a := 10</span><br><span class="line">a := &quot;test&quot;</span><br><span class="line">a := 1.234</span><br><span class="line">a := true</span><br></pre></td></tr></table></figure>
+
+:=  允许我们在declare a variable and initialize it at same time.
+
+
+var is the only garentee that for any type in sys that gives you the zero value
+
+3. conversion VS casting
+
+casting: 什么是casting？ 对于已经分配了1byte的数据， 我们要求系统改变他的分配， 让它使用4个byte，就是casting。 Go 不支持casting
+conversion更像一个函数， 会cost extra allocation, 
+
+
+2.2 Struct Types
+
+Being readability means knowing the cost we do
+type name struct {
+    a bool // 1byte
+    b int16  // 2byte
+    c float64 // 4byte
+}
+
+var a name // we initiliza it with zero value, what is the zero value of a struct?
+
+在内存里， 这个结构体是7个byte空间，但是事实上我们会分配8个byte空间 ==&gt; padding &amp; alignment
+
+在这个例子中， padding byte会存在于bool和int之间， reason is because of alignment
+It is more efficient for this piece of hardware to read memory on these alignment boundaries, and we agree to the hardware vendors, that we will take care of the alignment issues, so they dont have to spend time doing it.
+
+This is a nice cost trade-off.
+这件事compiler帮我们做了
+
+Go says:
+&quot; Depending on the size of a particular value, will determine the alignemnt we need.&quot;
+&quot; Every 2 byte value must fall in a 2 byte boundries &quot;
+
+如果再bool后面就是float64， 也就是1byte后面跟了个4byte，我们就要有3个padding byte。
+
+所以我们在定义结构体的时候，要注意内存占用，把占用最大的byte写在最上面， 直接就定义了最大的padding的大小。
+
+
+为什么两个结构完全相同的结构体， assignment 是不行的？
+```
+b bill
+l lisa
+b == l // wrong
+b == bill(l)</code></pre>
+        </div>
+      </article>
+    </div>
+    <!-- Comments -->
+    <div class="container">
+      
+<section id="comment">
+  <!-- <h1 class="title">Comments</h1> -->
+
+  
+</section>
+
+
+    </div>
+    <!-- Pre or Next -->
+    <div class="nav-links">
+      
+        <div class="nav-previous">
+          <a href="/2019/11/07/What-is-Structured-Logging-and-Why-We-use-it/" rel="prev"><span class="meta-arraw meta-arraw-left"></span> Older Posts</a>
+        </div>
+      
+      
+        <div class="nav-next">
+          <a href="/2019/11/04/5-ways-to-make-code-run-faster/" rel="prev">Newer Posts <span class="meta-arraw meta-arraw-right"></span></a>
+        </div>
+      
+    </div>
+
+  </div>
+</div>
+
+
+  <!-- Footer -->
+  <!-- Footer-widgets -->
+<div class="footer-widgets">
+  <div class="row inside-wrapper">
+    <div class="col-1-3">
+      <aside>
+        <h1 class="widget-title">About</h1>
+        <div class="custom-widget-content">
+          
+          <p>All Rights are reserved by You</p>
+        </div>
+      </aside>
+    </div>
+    <div class="col-1-3">
+      <aside>
+        <h1 class="widget-title">Contact</h1>
+        <div class="widget-text">
+          
+            
+              <a href="https://github.com/maxence1" class="icon icon-github" target="_blank">github</a>
+            
+              <a href="http://weibo.com/maxencius" class="icon icon-weibo" target="_blank">weibo</a>
+            
+              <a href="maxence.feng@gmail.com" class="icon icon-mail" target="_blank">mail</a>
+            
+          
+        </div>
+      </aside>
+    </div>
+    <div class="col-1-3">
+      <aside>
+        <h1 class="widget-title">Search</h1>
+        <div class="widget-text">
+          <form onSubmit="return appDaily.submitSearch('')">
+            <p>
+              <input type="text" placeholder="search..." id="homeSearchInput">
+            </p>
+            <!-- <input type="submit" value="GO"> -->
+          </form>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+<!-- Footer -->
+<footer class="site-info">
+  <p>
+    <span>The IT Crowd &copy; 2019</span>
+    
+      <span class="split">|</span>
+      <span>Powered by <a href="https://hexo.io/">Hexo</a> with Theme Daily</span>
+    
+  </p>
+</footer>
+
+
+  <!-- After footer scripts -->
+  <!-- scripts -->
+<script src="/js/app.js"></script>
+
+
+
+
+
+</body>
+
+</html>

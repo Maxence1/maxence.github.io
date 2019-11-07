@@ -18,7 +18,7 @@
 
   <!--Open Graph Title-->
   
-      <meta property="og:title" content="The IT Crowd">
+      <meta property="og:title" content="5 ways to make code run faster">
   
   <!--Open Graph Description-->
   
@@ -28,7 +28,7 @@
   <meta property="og:site_name" content="The IT Crowd">
   <!--Type page-->
   
-      <meta property="og:type" content="website">
+      <meta property="og:type" content="article">
   
   <!--Page Cover-->
   
@@ -37,7 +37,7 @@
 
   <!-- Title -->
   
-  <title>Golang - The IT Crowd</title>
+  <title>5 ways to make code run faster - The IT Crowd</title>
 
 
   <link rel="shortcut icon" href="https://hexo.io/icon/favicon-96x96.png">
@@ -115,46 +115,77 @@
 
 
   <!-- Main Content -->
-  
-
-<!-- Main Content -->
-<div class="archive content-area">
-  <div class="container">
-    <h1 class="entry-title">#Golang</h1>
-    <div class="row">
-      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-        <!-- Use lodash to classify posts. See https://lodash.com/docs#groupBy -->
-        
-        
-          <h2 class="year">2019</h2>
-          <ul class="list">
+  <div class="content-area">
+  <div class="post">
+    <!-- Post Content -->
+    <div class="container">
+      <article>
+        <!-- Title date & tags -->
+        <div class="post-header">
+          <h1 class="entry-title">
+            5 ways to make code run faster
             
-  <li>
-    <span class="date">
-      2019-11-05
-    </span>
-    <a href="/2019/11/05/Ultimate-Go/" class="title">
-      Ultimate Go
-    </a>
-  </li>
+          </h1>
+          <p class="posted-on">
+          2019-11-04
+          </p>
+          <div class="tags-links">
+            
+              
+                <a href="/tags/Code Optimize/" rel="tag">
+                  Code Optimize
+                </a>
+              
+            
+          </div>
+        </div>
+        <!-- Post Main Content -->
+        <div class="entry-content has_line_number">
+          <ol>
+<li><p>使用profile<br>不要浪费时间去优化一些本来就花不了多少时间的code上<br>通过profile，了解程序最花时间的地方.<br>而使用profile的最好的方法是寻找hotspot</p>
+</li>
+<li><p>使用内建的编辑器自带的optimizer</p>
+</li>
+<li><p>优化代码</p>
+<ol>
+<li>对于被多次计算的代码，最好只计算一次然后记录起来</li>
+<li>考虑将一些expensive的操作改成简单的操作。同时也要注意代码可读性</li>
+<li>当不需要iteration的时候就不使用loop</li>
+<li>对于经常使用的值，将其存到cache中</li>
+<li>将代码用低级语言重写。一些低级语言往往更加高效</li>
+</ol>
+</li>
+</ol>
 
-  <li>
-    <span class="date">
-      2019-10-31
-    </span>
-    <a href="/2019/10/31/Don-t-just-check-errors-handle-them-gracefully/" class="title">
-      Don't just check errors, handle them gracefully
-    </a>
-  </li>
-
-
-          </ul>
-        
-      </div>
+        </div>
+      </article>
     </div>
-  </div>
-  
+    <!-- Comments -->
+    <div class="container">
+      
+<section id="comment">
+  <!-- <h1 class="title">Comments</h1> -->
 
+  
+</section>
+
+
+    </div>
+    <!-- Pre or Next -->
+    <div class="nav-links">
+      
+        <div class="nav-previous">
+          <a href="/2019/11/05/Ultimate-Go/" rel="prev"><span class="meta-arraw meta-arraw-left"></span> Older Posts</a>
+        </div>
+      
+      
+        <div class="nav-next">
+          <a href="/2019/10/31/Don-t-just-check-errors-handle-them-gracefully/" rel="prev">Newer Posts <span class="meta-arraw meta-arraw-right"></span></a>
+        </div>
+      
+    </div>
+
+  </div>
 </div>
 
 
