@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!--Description-->
+  
+  <meta name="description" content="This is a blog with my daily thinks.">
+  
+
+  <!--Author-->
+  
+  <meta name="author" content="Pengda Feng">
+  
+
+  <!--Open Graph Title-->
+  
+      <meta property="og:title" content="AWS learning">
+  
+  <!--Open Graph Description-->
+  
+      <meta property="og:description" content="This is a blog with my daily thinks.">
+  
+  <!--Open Graph Site Name-->
+  <meta property="og:site_name" content="The IT Crowd">
+  <!--Type page-->
+  
+      <meta property="og:type" content="article">
+  
+  <!--Page Cover-->
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <!-- Title -->
+  
+  <title>AWS learning - The IT Crowd</title>
+
+
+  <link rel="shortcut icon" href="https://hexo.io/icon/favicon-96x96.png">
+
+  <!-- Custom CSS/Sass -->
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!----------------------------
+  https://github.com/GallenHu/hexo-theme-Daily
+
+ _____            _   _
+|  __ \          (_) | |
+| |  | |   __ _   _  | |  _   _
+| |  | |  / _` | | | | | | | | |
+| |__| | | (_| | | | | | | |_| |
+|_____/   \__,_| |_| |_|  \__, |
+                          __/ |
+                         |___/
+
+    --------------------------->
+
+</head>
+
+
+<body>
+
+  <!-- Nav -->
+  <header class="site-header">
+  <div class="header-inside">
+    <div class="logo">
+      <a href="/" rel="home">
+        
+      </a>
+    </div>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse">
+        <ul class="navbar-nav">
+          
+          
+            <li>
+              <a href="/.">
+                
+                  home
+                
+              </a>
+            </li>
+          
+            <li>
+              <a href="/archives">
+                
+                  archive
+                
+              </a>
+            </li>
+          
+        </ul>
+      </div>
+      <!-- /.navbar-collapse -->
+    </nav>
+    <div class="button-wrap">
+      <button class="menu-toggle">Primary Menu</button>
+    </div>
+  </div>
+</header>
+
+
+  <!-- Main Content -->
+  <div class="content-area">
+  <div class="post">
+    <!-- Post Content -->
+    <div class="container">
+      <article>
+        <!-- Title date & tags -->
+        <div class="post-header">
+          <h1 class="entry-title">
+            AWS learning
+            
+          </h1>
+          <p class="posted-on">
+          2019-11-12
+          </p>
+          <div class="tags-links">
+            
+              
+                <a href="/tags/AWS/" rel="tag">
+                  AWS
+                </a>
+              
+            
+          </div>
+        </div>
+        <!-- Post Main Content -->
+        <div class="entry-content has_line_number">
+          <h3 id="什么是IAM"><a href="#什么是IAM" class="headerlink" title="什么是IAM"></a>什么是IAM</h3><pre><code>Identity &amp; access management
+管理aws users, groups, IAM access policy and roles.
+建立aws account的用户被称为root user. Root user has full access.</code></pre><h3 id="什么是VPC"><a href="#什么是VPC" class="headerlink" title="什么是VPC"></a>什么是VPC</h3><pre><code>&gt; https://www.youtube.com/watch?v=7XnpdZF_COA
+就像是facebook， 我们每个人都有一个个人主页， 里面可能有photo， vedio等等。
+那么这个个人主页就是我们的一个VPC
+virtual private cloud
+
+每个人的家庭网络也是一个VPC
+我们有线缆、路由器、调制解调器、PC
+路由器和调制解调器的区别？
+
+路由器用来把网络连接共享给多个设备， 就是你们家如果是有限连接的话， 没有路由器也是可以的，就只有一台PC上网就完事儿了。
+
+调制解调器用来连接互联网供应商(ISP  internet service provider)
+
+所以家庭网络的连接图：
+Internet -&gt; Modem -&gt; Router -&gt; Firewall -&gt; PC
+
+VPC:
+Internet -&gt; InternetGateway -&gt; RoutTable (tell us which computer to go to ) -&gt; Network Access Control List(NACL) -&gt; EC2 Instance    </code></pre><h4 id="Internet-Gateway-IGW"><a href="#Internet-Gateway-IGW" class="headerlink" title="Internet Gateway (IGW)"></a>Internet Gateway (IGW)</h4><pre><code>attached to VPC
+Provide connection to Internet for VPC</code></pre><h4 id="Route-Tables-RTs"><a href="#Route-Tables-RTs" class="headerlink" title="Route Tables (RTs)"></a>Route Tables (RTs)</h4><pre><code>decide where to go </code></pre><h4 id="network-access-control-list"><a href="#network-access-control-list" class="headerlink" title="network access control list"></a>network access control list</h4><pre><code>&gt; https://www.youtube.com/watch?v=vJzHn24TNQE&amp;list=PLv2a_5pNAko0Mijc6mnv04xeOut443Wnk&amp;index=17
+控制安全的， optinal
+类似于防火墙
+数据流入Instance 或者是流出Instance 都要经过NACL
+由RTs 流入Instance 叫做Inbound Rules
+由Instance 流入RTs 叫做OutBound Rules
+
+当定义了多条一样的RUle的时候，生效的是Rule# 较小的那一条</code></pre><h4 id="Subnet"><a href="#Subnet" class="headerlink" title="Subnet"></a>Subnet</h4><pre><code>subnet is sub-section of a network
+Generally a subnet contains all the computers in a specific location
+
+如果把互联网供应商 ISP理解成一个Network， 那我们的个人家庭网络其实就是一个subNet
+
+public subnet: have a router to the internet
+private subnet: donot have a router to the internet
+
+private Subnet里面的东西可以通过RTs 来和其他的subnet通信， 但是不能和internet通信</code></pre><h4 id="Availability-Zone"><a href="#Availability-Zone" class="headerlink" title="Availability Zone"></a>Availability Zone</h4><pre><code>任何的AWS资源， 例如 EC2等，都必须放在一个VPC subnet中
+任何一个subnet必须存在于一个Availability Zone 中
+你应该在你的架构中创建多个AZ， This is what allows for High Avalibility and Fault Toleratent system
+
+High Avalibility: 让你的系统总是Available的， downTime降低到最小： 网站不崩溃，总能得到数据
+Fault Toleratent: 当系统中的一个或几个组件崩溃的时候，系统仍然是available的</code></pre><h3 id="S3"><a href="#S3" class="headerlink" title="S3"></a>S3</h3><pre><code>Simple Storage Service
+S3 has a simple web service that you can use to store and retrieve any amout of data, at any time , from anywhere on web
+
+It&apos;a amazon&apos;s primary storage service. you can store any type of file.</code></pre><h4 id="Buckets-amp-Object-amp-Region"><a href="#Buckets-amp-Object-amp-Region" class="headerlink" title="Buckets &amp; Object &amp; Region"></a>Buckets &amp; Object &amp; Region</h4><pre><code>Root level folders you create are considered buckets
+sub-folder you create in a bucket is considered as a folder
+
+Folder 中的file可以看做是Object
+
+每个Bucket都存在于一个Region中。 一般应该选择离你最近的那个region来减少data transfer中的latency</code></pre><h4 id="storage-classes"><a href="#storage-classes" class="headerlink" title="storage classes"></a>storage classes</h4><pre><code>有几个默认的class， 基本是根据storage cost/Object availability/ Object Durability/ Storage cost
+Standard
+Reduced Redundancy Storage (RRS) 
+Infrequent Access (S3-IA)
+Glacier
+
+每当我们上传一个文件的时候，都要多方面考虑，来决定我们要放在哪个等级</code></pre><h5 id="Standard"><a href="#Standard" class="headerlink" title="Standard"></a>Standard</h5><pre><code>designed for all purpose , for general storage
+Is default option&apos;
+99.9999999999% durability
+99.99% object availability
+Is the most expensive storage class</code></pre><h5 id="RRS"><a href="#RRS" class="headerlink" title="RRS"></a>RRS</h5><pre><code>Designed for non-critical, reproducible objexts
+99.99% object durability
+99.99% object availability
+less expensive than Standard</code></pre><h5 id="S3-IA"><a href="#S3-IA" class="headerlink" title="S3-IA"></a>S3-IA</h5><pre><code>designed for objects that you do not access frequently, but must be immediately available when accessed
+99.99999999999% durability
+99.90% availability
+less expensive than RRS</code></pre><h5 id="Glacier"><a href="#Glacier" class="headerlink" title="Glacier"></a>Glacier</h5><pre><code>designed for long-term archive storage
+may take several hours for object stored in Glacier to retrieved
+99.99999999999% object durability
+very low cost</code></pre><h5 id="Durability"><a href="#Durability" class="headerlink" title="Durability"></a>Durability</h5><pre><code>percent over a 1 year time period being lost.
+如果是99%，以为你的文件有1% 的几率丢掉了再一年中</code></pre><h5 id="Availability"><a href="#Availability" class="headerlink" title="Availability"></a>Availability</h5><pre><code>如果是99， 那么有1%的几率无法access</code></pre><h4 id="S3-Object-lifeCycle"><a href="#S3-Object-lifeCycle" class="headerlink" title="S3 Object lifeCycle"></a>S3 Object lifeCycle</h4><pre><code>可以自动化的转换文件的文件类型， 来降低成本</code></pre><h4 id="Permission"><a href="#Permission" class="headerlink" title="Permission"></a>Permission</h4><pre><code>谁能看bucket， file，谁能control</code></pre><h4 id="Object-versioning"><a href="#Object-versioning" class="headerlink" title="Object versioning"></a>Object versioning</h4><pre><code>像git一样，会自动记录新旧文件</code></pre><h3 id="EC2"><a href="#EC2" class="headerlink" title="EC2"></a>EC2</h3><pre><code>is just a pc computer you use in cloud and provision
+scaleable 可以根据请求来变多或者少
+
+EC2 
+Operating system:     AMIs (Linux or windows) amazon machine images
+CPU:                 Instance type (processing power)
+harddrive:             EBS (local storage) elastic block store
+Network card:         IP Addressing (Internet access)
+FireWall:             security group
+RAM:                 RAM
+
+AMI: a preconfigured package required to launch and EC2 instance, include a os, software packages and other required settings
+    Root Volumn Templete           
+        Operating system
+        allications software
+    Launch permissions 
+    Block device Mapping
+        EBS (hard drive mapping)
+
+
+    Root Volumn Templete    (my linux EC2 instance)        
+        Operating system    (Amazon Linux)
+        allications software (Apache web server)
+    Launch permissions 
+    Block device Mapping
+        EBS (hard drive mapping)
+
+    当设定了一个AMI的时候，其他instance也可以照搬了
+    所以当我们建立一个EC2 的时候我们要做的第一件事就是建立AMI
+
+EBS 
+    IOPS input output operation per second
+    EBS volumn size 决定了IOPS</code></pre><h3 id="RDS-amp-DynamoDB"><a href="#RDS-amp-DynamoDB" class="headerlink" title="RDS &amp; DynamoDB"></a>RDS &amp; DynamoDB</h3><pre><code>RDS is 关系型数据库 relation database service
+DynammoDB是非关系型数据库
+
+RDS
+    Amazon Aurura
+    Mysql
+    MariaDB
+    PostgreSQL
+    Oracle
+    Microsoft SQL server</code></pre>
+        </div>
+      </article>
+    </div>
+    <!-- Comments -->
+    <div class="container">
+      
+<section id="comment">
+  <!-- <h1 class="title">Comments</h1> -->
+
+  
+</section>
+
+
+    </div>
+    <!-- Pre or Next -->
+    <div class="nav-links">
+      
+        <div class="nav-previous">
+          <a href="/2019/11/12/SRE-Training/" rel="prev"><span class="meta-arraw meta-arraw-left"></span> Older Posts</a>
+        </div>
+      
+      
+        <div class="nav-next">
+          <a href="/2019/11/11/TerraForm-Training/" rel="prev">Newer Posts <span class="meta-arraw meta-arraw-right"></span></a>
+        </div>
+      
+    </div>
+
+  </div>
+</div>
+
+
+  <!-- Footer -->
+  <!-- Footer-widgets -->
+<div class="footer-widgets">
+  <div class="row inside-wrapper">
+    <div class="col-1-3">
+      <aside>
+        <h1 class="widget-title"></h1>
+        <div class="custom-widget-content">
+          
+          <p></p>
+        </div>
+      </aside>
+    </div>
+    <div class="col-1-3">
+      <aside>
+        <h1 class="widget-title">Contact</h1>
+        <div class="widget-text">
+          
+            
+              <a href="https://github.com/maxence1" class="icon icon-github" target="_blank">github</a>
+            
+              <a href="http://weibo.com/maxencius" class="icon icon-weibo" target="_blank">weibo</a>
+            
+              <a href="maxence.feng@gmail.com" class="icon icon-mail" target="_blank">mail</a>
+            
+          
+        </div>
+      </aside>
+    </div>
+    <div class="col-1-3">
+      <aside>
+        <h1 class="widget-title">Search</h1>
+        <div class="widget-text">
+          <form onSubmit="return appDaily.submitSearch('')">
+            <p>
+              <input type="text" placeholder="search..." id="homeSearchInput">
+            </p>
+            <!-- <input type="submit" value="GO"> -->
+          </form>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+<!-- Footer -->
+<footer class="site-info">
+  <p>
+    <span>The IT Crowd &copy; 2019</span>
+    
+      <span class="split">|</span>
+      <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> with Theme <a href="https://github.com/GallenHu/hexo-theme-Daily" target="_blank">Daily</a></span>
+    
+  </p>
+</footer>
+
+
+  <!-- After footer scripts -->
+  <!-- scripts -->
+<script src="/js/app.js"></script>
+
+
+
+
+
+</body>
+
+</html>

@@ -284,15 +284,39 @@
 </li>
 <li><p>add util file in orderflag -&gt; WIP</p>
 </li>
-<li><p>填写航总的wiki</p>
+<li><p>填写航总的wiki DONE</p>
 </li>
 <li><p>调查FPT stuck的原因， 检查stuck的趋势<br> 分析了一些可以cancel的。<br> domino hack的单交给OPS去complete，不用管</p>
 </li>
 <li><p>增加百分比cancel(wait for FDT to decide)<br> 添加ucm templete</p>
 </li>
-<li><p>rollout problem  稳定为主</p>
-</li>
 </ol>
+<p>food/food-order-manager/dto/z_dto.go:268</p>
+<ol>
+<li>orderType已经有了，是否要替换</li>
+<li>order.Snapshot.CartWithQuote.Orderflags<br> malaka</li>
+<li>对于判断的switch，伴随着其他的判断， 例如state的判断， 不好转移food/food-order-manager/server/handlers/cancelorder.go:107</li>
+</ol>
+<ol>
+<li>Domino Hack<br> 商家接单后不行了</li>
+<li>leadsgen<br> 商家接单后不行了， 而且商家所在的城市要支持cancel</li>
+<li>takeaway<br> 商家接单后不行了</li>
+<li>schedulerOrderForbidden<br> ucm 允许SO cancel<br> 骑手拿到之后，要看grabX是否支持<br> 如果是骑手接单之后，要看是否支持<br> 如果是商家接单之后，要看是否支持</li>
+</ol>
+<ol start="8">
+<li>rollout problem  稳定为主</li>
+</ol>
+<p>11.8</p>
+<ol>
+<li>rollout 75%</li>
+<li>add script 加完了</li>
+<li>FDT说下周一一起商量一下</li>
+<li>FPT cancel</li>
+<li>add UT for order.go</li>
+<li></li>
+</ol>
+<p>const (<br>    NotCancelable = 0<br>    canCancel = 1<br>    canCancelBeforeMexAccept = 2<br>    canCancelAfterMexAccept = 3<br>    canCancelAfterDaxAccept = 4<br>    canCancelAfterDaxCollect = 5</p>
+<p>)<br>func GetCancelablePolicy(ctx context.Context, orderflag int64, order dto.Order) int64 {<br>    if IsSet(orderflag, Concierge) {<br>        return canCancel<br>    }<br>    if IsSet(orderflag, ScheduledOrder) {<br>        if !ucm.GetVariables().EnableSchedulerOrderCancelPolicy {<br>            return NotCancelable<br>        }<br>        if external.GrabX.EnableCancelSOAfterDaxCollect(ctx, order.PaxID, order.CityID){<br>            return canCancelAfterDaxCollect<br>        }<br>        if external.GrabX.EnableCancelSOAfterDaxAccept(ctx, order.PaxID, order.CityID) {<br>            return canCancelAfterDaxAccept<br>        }<br>        if external.GrabX.EnableCancelSOAfterMexAccept(ctx, order.PaxID, order.CityID) {<br>            return canCancelAfterMexAccept<br>        }<br>    }<br>    switch GetOrderFlow(orderflag) {<br>    case SelfPickUp:<br>        return canCancelBeforeMexAccept<br>    case OrderFlowStandardLeadsGen:<br>        countryCode := “”<br>        if order.SnapshotDetail != nil {<br>            countryCode = order.SnapshotDetail.CountryCode<br>        }<br>        if rolloututils.IsStrInStringList(countryCode, ucm.GetVariables().OnlyAllowCancelBeforeMexAcceptCountryForLeadsGen) {<br>            return NotCancelable<br>        }<br>        return canCancelBeforeMexAccept<br>    case OrderFlowDominoHack:<br>        return canCancelBeforeMexAccept<br>    }<br>}</p>
 
         </div>
       </article>
