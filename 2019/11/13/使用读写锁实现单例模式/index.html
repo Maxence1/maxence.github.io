@@ -18,7 +18,7 @@
 
   <!--Open Graph Title-->
   
-      <meta property="og:title" content="What is Unicode">
+      <meta property="og:title" content="使用读写锁实现单例模式">
   
   <!--Open Graph Description-->
   
@@ -37,7 +37,7 @@
 
   <!-- Title -->
   
-  <title>What is Unicode - The IT Crowd</title>
+  <title>使用读写锁实现单例模式 - The IT Crowd</title>
 
 
   <link rel="shortcut icon" href="https://hexo.io/icon/favicon-96x96.png">
@@ -115,30 +115,43 @@
         <!-- Title date & tags -->
         <div class="post-header">
           <h1 class="entry-title">
-            What is Unicode
+            使用读写锁实现单例模式
             
           </h1>
           <p class="posted-on">
-          2019-10-24
+          2019-11-13
           </p>
           <div class="tags-links">
             
-              
-                <a href="/tags/Unicode/" rel="tag">
-                  Unicode
-                </a>
               
             
           </div>
         </div>
         <!-- Post Main Content -->
         <div class="entry-content has_line_number">
-          <ol>
-<li>最开始的时候计算机只能识别数字，人们开发了各种编码方法， 试图把字母编码成为数字来录入计算机。</li>
-</ol>
+          <p>单例模式， 和分布式锁没什么关系</p>
+<p>首先我们要检查是不是有了， 如果没有，就去创建</p>
+<p>那么就要在检查是不是有了的时候进行加锁，为了变得轻量，所以加一个读锁</p>
+<p>大家都读，有两个unlock没来得及释放</p>
+<p>先+2， 再-2，</p>
+<p>先加2个新的， 释放2个老的 （lock操作）</p>
+<p>可能不是同时执行的</p>
+<p>check 一个interface 是不是nil， 不是原子操作<br>所以我们想的办法是直接弄成原子变量就行了</p>
+<p>golang的读写锁是有writer的时候就禁止reader去获取锁</p>
+<p>有人去写东西，就会告诉想获取读锁的人说，你不准获取了，我要写了</p>
 <ol>
-<li>检查是否是创建好了， 所以读锁。<br>轻量，加读</li>
+<li>删除qsrmodeltype</li>
+<li>转移getDeliveryBy</li>
+<li>largeOrder</li>
 </ol>
+<p>isDuplicate Order</p>
+<ol>
+<li>老订单怎么办</li>
+<li>orderflow的老订单怎么办</li>
+<li>orderflow grab的老订单怎么办</li>
+</ol>
+<p>先land这个diff， 然后提另一个diff， 然后改一下这个diff</p>
+<p>然后deliveryBy也可以了就</p>
 
         </div>
       </article>
@@ -158,12 +171,12 @@
     <div class="nav-links">
       
         <div class="nav-previous">
-          <a href="/2019/10/28/使用bitmap来记录flag/" rel="prev"><span class="meta-arraw meta-arraw-left"></span> Older Posts</a>
+          <a href="/2019/11/14/Design-Pattern/" rel="prev"><span class="meta-arraw meta-arraw-left"></span> Older Posts</a>
         </div>
       
       
         <div class="nav-next">
-          <a href="/2019/10/24/FDT-代码学习心得/" rel="prev">Newer Posts <span class="meta-arraw meta-arraw-right"></span></a>
+          <a href="/2019/11/12/SRE-Training/" rel="prev">Newer Posts <span class="meta-arraw meta-arraw-right"></span></a>
         </div>
       
     </div>

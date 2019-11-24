@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!--Description-->
+  
+  <meta name="description" content="This is a blog with my daily thinks.">
+  
+
+  <!--Author-->
+  
+  <meta name="author" content="Pengda Feng">
+  
+
+  <!--Open Graph Title-->
+  
+      <meta property="og:title" content="设计模式">
+  
+  <!--Open Graph Description-->
+  
+      <meta property="og:description" content="This is a blog with my daily thinks.">
+  
+  <!--Open Graph Site Name-->
+  <meta property="og:site_name" content="The IT Crowd">
+  <!--Type page-->
+  
+      <meta property="og:type" content="article">
+  
+  <!--Page Cover-->
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <!-- Title -->
+  
+  <title>设计模式 - The IT Crowd</title>
+
+
+  <link rel="shortcut icon" href="https://hexo.io/icon/favicon-96x96.png">
+
+  <!-- Custom CSS/Sass -->
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!----------------------------
+  https://github.com/GallenHu/hexo-theme-Daily
+
+ _____            _   _
+|  __ \          (_) | |
+| |  | |   __ _   _  | |  _   _
+| |  | |  / _` | | | | | | | | |
+| |__| | | (_| | | | | | | |_| |
+|_____/   \__,_| |_| |_|  \__, |
+                          __/ |
+                         |___/
+
+    --------------------------->
+
+</head>
+
+
+<body>
+
+  <!-- Nav -->
+  <header class="site-header">
+  <div class="header-inside">
+    <div class="logo">
+      <a href="/" rel="home">
+        
+      </a>
+    </div>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse">
+        <ul class="navbar-nav">
+          
+          
+            <li>
+              <a href="/.">
+                
+                  home
+                
+              </a>
+            </li>
+          
+            <li>
+              <a href="/archives">
+                
+                  archive
+                
+              </a>
+            </li>
+          
+        </ul>
+      </div>
+      <!-- /.navbar-collapse -->
+    </nav>
+    <div class="button-wrap">
+      <button class="menu-toggle">Primary Menu</button>
+    </div>
+  </div>
+</header>
+
+
+  <!-- Main Content -->
+  <div class="content-area">
+  <div class="post">
+    <!-- Post Content -->
+    <div class="container">
+      <article>
+        <!-- Title date & tags -->
+        <div class="post-header">
+          <h1 class="entry-title">
+            设计模式
+            
+          </h1>
+          <p class="posted-on">
+          2019-11-24
+          </p>
+          <div class="tags-links">
+            
+              
+            
+          </div>
+        </div>
+        <!-- Post Main Content -->
+        <div class="entry-content has_line_number">
+          <h1 id="简单工厂模式"><a href="#简单工厂模式" class="headerlink" title="简单工厂模式"></a>简单工厂模式</h1><p>当要设计一个计算器的时候</p>
+<ol>
+<li>从输入端读取数据</li>
+<li>根据不同的加减乘除，进行运算</li>
+</ol>
+<p>改进1： 业务与逻辑分离： 在面向过程的编程实现得基础之上， 首先进行前后端分离。<br>改进2： 在代码中使用加减乘除的switch来进行判断。 当要新加一个运算符的时候， 需要在switch中新加一个分支。 有可能会改动之前的代码。<br>就不太安全。 比如现在要让你加一个逻辑，却要把之前的逻辑都暴露给你，岂不是你有机会修改别的代码了<br>解决办法: 把每个switch之中的逻辑进行封装成为相应的类， 对应的switch就执行对应的方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">class Opearation &#123;</span><br><span class="line">	private double _numberA;</span><br><span class="line">	private double _numberB;</span><br><span class="line"></span><br><span class="line">	public double getnumberA &#123;</span><br><span class="line">    	return _numberA;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void setNumberA  (value) &#123;</span><br><span class="line">		_numberA = value;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public virtual double getResult() &#123;</span><br><span class="line">		double result = 0;</span><br><span class="line">		return result;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class OperationAdd extends Opertion &#123;</span><br><span class="line">	@override</span><br><span class="line">	public void double getresult() &#123;</span><br><span class="line">		return numberA + numberB</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后再switch之中的代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">使用单独的一个类来做这个创造实例的过程， 简称工厂。</span><br><span class="line">switch operator &#123;</span><br><span class="line">	case &quot;+&quot; :</span><br><span class="line">		ops = new OperationAdd()</span><br><span class="line">	case ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">// 客户端代码</span><br><span class="line">Opearation ops;</span><br><span class="line">ops = OperationFactory.createOperate(&quot;+&quot;)</span><br><span class="line">ops.numberA = 1;</span><br><span class="line">ops.numberB = 2;</span><br><span class="line">doubl result = ops.getresult()</span><br></pre></td></tr></table></figure>
+
+<p>代码分析：</p>
+<ol>
+<li>有一天要修改加法的运算规则：  修改子类就可以了。</li>
+<li>如果有一天要增加一种运算规则：<br>增加一个子类， 然后再switch中加上这个判断就行了。</li>
+</ol>
+<h1 id="策略模式"><a href="#策略模式" class="headerlink" title="策略模式"></a>策略模式</h1><p>场景： 商场中的收银机要根据商品的单价和数量计算钱。<br>现在对商场所有商品搞活动。所有商品打八折。</p>
+<p>设计：<br>可以设计几个选项： </p>
+<ol>
+<li>正常收费</li>
+<li>打八折</li>
+<li>打五折</li>
+<li>打一折<br>…</li>
+</ol>
+<p>然后再计算的时候对选项进行switch，是哪一种就选择哪一种。</p>
+<p>改进： 发现这几个分支其实主要的逻辑是一样的，都是在重复。<br>所以可以使用简单工厂模式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">class Campaign &#123;</span><br><span class="line">	// 父类</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class campaign_8zhe extends campaign&#123;</span><br><span class="line">	// ... 打八折</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后写简单工厂类</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">package campaignFactory</span><br><span class="line"></span><br><span class="line">func CreateCampagin(camp) &#123;</span><br><span class="line">	switch (campaignType) &#123;</span><br><span class="line">		case &quot;打八折&quot;:</span><br><span class="line">			camp = new Camopaign_8zhe();</span><br><span class="line">		case ...</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后就可以再客户端</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">camp = campaignFactory.createCampaign(&quot;打八折&quot;)</span><br><span class="line">camp.Getresult()</span><br></pre></td></tr></table></figure>
+
+<p>其实父类的设计上可以进行大类上的分类吗， 比如说有些是正常收费，有些是打折收费， 有些是满减收费。</p>
+<p>如果新增一种满减， 只需要改动前段的参数就可以了。</p>
+<p>如果新加一种方式，消费返还积分，只需要增加对应的子类就可以了。</p>
+<p>弊端： 商场可能会经常的改动， 所以每次维护和拓展都要改动工厂，导致代码需要重新编译部署，很麻烦。</p>
+<p>对于策略模式暂时还没有彻底弄清楚。</p>
+<h1 id="单一职责原则"><a href="#单一职责原则" class="headerlink" title="单一职责原则"></a>单一职责原则</h1><p>大多数的时候，一个产品简单一点， 职责单一一点是一个更好的选择。<br>就一个类而言， 应该仅有一个引起它变化的原因。</p>
+<p>如果一个类承担的责任过多，就会把这些职责都耦合在一起。 其中一个职责的变化可能会削弱或者一直这个类完成其他职责的能力。<br>在设计一个游戏的时候，往往可以吧界面和逻辑进行分离。</p>
+<p>以俄罗斯方块为例子。<br>界面的逻辑就只有绘画和擦除， 游戏的逻辑包含左右移动、碰撞检测。</p>
+<h1 id="开放封闭原则"><a href="#开放封闭原则" class="headerlink" title="开放封闭原则"></a>开放封闭原则</h1><p>意思就是一个类、函数、模块， 对于拓展是开放的， 但是对于修改应该是封闭的。</p>
+<p>在设计一个类的时候， 要时刻进行考虑，尽量让这个类足够好，写好了就不要去修改了。<br>如果新的需求来了，我们增加一些类就完事儿了。原来的代码能不动就不动。</p>
+<p>但是在实际中，我们不可能一口气就写出来不用修改的类。所以我们应该提前预先认识到有哪些类是有可能被改变的，然后将其抽象出来。</p>
+<p>在变化发生的时候就要及时采取行动。<br>在最初编写代码的时候， 还是假设不会发生变化， 但是当变化发生的时候就应该抽象出来，避免以后发生同类型的变化。</p>
+<p>例如在最开始做计算器的时候， 如果只有一个加法，那很快就可以做完。但是如果变化来了，要求多家一个减法的时候，我们要及时作出抽象处理。</p>
+<h1 id="依赖倒转原则"><a href="#依赖倒转原则" class="headerlink" title="依赖倒转原则"></a>依赖倒转原则</h1><p>面向对象的好处在于<br>可以拓展、可以复用、可以维护、灵活性比较好<br>活字印刷的例子非常形象生动</p>
+<p>抽象不应该依赖细节， 细节应该依赖抽象<br>说白了就是应该面向接口变成，不要面向实现变成</p>
+<p>举一个例子， 就是我们的代码中调用的数据库， 如果直接把数据库的逻辑卸载代码里面， 就相当于把高层逻辑和底层逻辑混淆到一起去了，当我们想要换一个数据库的时候变得非常麻烦。<br>所以应该有一个接口出现，接口的左边是我们的高层逻辑，接口的右边是数据库逻辑。<br>只要接口是稳定的，不管是哪个service坏了，也不怕其他的收到影响。</p>
+<h3 id="里氏代换原则"><a href="#里氏代换原则" class="headerlink" title="里氏代换原则"></a>里氏代换原则</h3><ul>
+<li>一个软件实体如果使用的是一个父类的话，那么一定适用于其子类。而且它察觉不出子类和父类对象之间的区别。也就是说，在软件中把父类替换成它的子类，程序的行为没有变化。*</li>
+</ul>
+<p>简单的说，子类型必须能够替换带哦他们的父类型。</p>
+<p>就好像是我们在学习继承的时候要理解的概念： 子类继承了父类，所以子类可以以父类的身份出现。</p>
+<p>举一个例子， 鸟是一个父类，企鹅虽然在生物学属于鸟类， 但是企鹅不会飞，不能以父类的身份出现， 所以在编程中， 企鹅不能作为鸟的子类。</p>
+<ul>
+<li>子类拥有父类所有的非Private属性*</li>
+</ul>
+
+        </div>
+      </article>
+    </div>
+    <!-- Comments -->
+    <div class="container">
+      
+<section id="comment">
+  <!-- <h1 class="title">Comments</h1> -->
+
+  
+</section>
+
+
+    </div>
+    <!-- Pre or Next -->
+    <div class="nav-links">
+      
+      
+        <div class="nav-next">
+          <a href="/2019/11/22/Hacker-Code-30-Days/" rel="prev">Newer Posts <span class="meta-arraw meta-arraw-right"></span></a>
+        </div>
+      
+    </div>
+
+  </div>
+</div>
+
+
+  <!-- Footer -->
+  <!-- Footer-widgets -->
+<div class="footer-widgets">
+  <div class="row inside-wrapper">
+    <div class="col-1-3">
+      <aside>
+        <h1 class="widget-title"></h1>
+        <div class="custom-widget-content">
+          
+          <p></p>
+        </div>
+      </aside>
+    </div>
+    <div class="col-1-3">
+      <aside>
+        <h1 class="widget-title">Contact</h1>
+        <div class="widget-text">
+          
+            
+              <a href="https://github.com/maxence1" class="icon icon-github" target="_blank">github</a>
+            
+              <a href="http://weibo.com/maxencius" class="icon icon-weibo" target="_blank">weibo</a>
+            
+              <a href="maxence.feng@gmail.com" class="icon icon-mail" target="_blank">mail</a>
+            
+          
+        </div>
+      </aside>
+    </div>
+    <div class="col-1-3">
+      <aside>
+        <h1 class="widget-title">Search</h1>
+        <div class="widget-text">
+          <form onSubmit="return appDaily.submitSearch('')">
+            <p>
+              <input type="text" placeholder="search..." id="homeSearchInput">
+            </p>
+            <!-- <input type="submit" value="GO"> -->
+          </form>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+<!-- Footer -->
+<footer class="site-info">
+  <p>
+    <span>The IT Crowd &copy; 2019</span>
+    
+      <span class="split">|</span>
+      <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> with Theme <a href="https://github.com/GallenHu/hexo-theme-Daily" target="_blank">Daily</a></span>
+    
+  </p>
+</footer>
+
+
+  <!-- After footer scripts -->
+  <!-- scripts -->
+<script src="/js/app.js"></script>
+
+
+
+
+
+</body>
+
+</html>

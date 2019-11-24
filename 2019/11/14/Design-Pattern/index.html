@@ -18,7 +18,7 @@
 
   <!--Open Graph Title-->
   
-      <meta property="og:title" content="What is Unicode">
+      <meta property="og:title" content="Design Pattern">
   
   <!--Open Graph Description-->
   
@@ -37,7 +37,7 @@
 
   <!-- Title -->
   
-  <title>What is Unicode - The IT Crowd</title>
+  <title>Design Pattern - The IT Crowd</title>
 
 
   <link rel="shortcut icon" href="https://hexo.io/icon/favicon-96x96.png">
@@ -115,17 +115,17 @@
         <!-- Title date & tags -->
         <div class="post-header">
           <h1 class="entry-title">
-            What is Unicode
+            Design Pattern
             
           </h1>
           <p class="posted-on">
-          2019-10-24
+          2019-11-14
           </p>
           <div class="tags-links">
             
               
-                <a href="/tags/Unicode/" rel="tag">
-                  Unicode
+                <a href="/tags/Design Pattern/" rel="tag">
+                  Design Pattern
                 </a>
               
             
@@ -134,10 +134,11 @@
         <!-- Post Main Content -->
         <div class="entry-content has_line_number">
           <ol>
-<li>最开始的时候计算机只能识别数字，人们开发了各种编码方法， 试图把字母编码成为数字来录入计算机。</li>
-</ol>
-<ol>
-<li>检查是否是创建好了， 所以读锁。<br>轻量，加读</li>
+<li><p>单例模式<br> 其实本来单例模式很好写，之所以大家变得越来越复杂，是因为保证并发状态下的单例。</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">package manager</span><br><span class="line"></span><br><span class="line">import &quot;fmt&quot;</span><br><span class="line"></span><br><span class="line">type manager struct&#123;&#125;</span><br><span class="line"></span><br><span class="line">var m *manager</span><br><span class="line"></span><br><span class="line">func GetInstance() *manager &#123;</span><br><span class="line">	if m == nil &#123;</span><br><span class="line">		return &amp;manager&#123;&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	return m</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func (p manager) Manage() &#123;</span><br><span class="line">	fmt.Println(manage...)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p> 问题：<br> 当并发调用 <code>GetInstance</code> 函数的时候</p>
+</li>
 </ol>
 
         </div>
@@ -158,12 +159,12 @@
     <div class="nav-links">
       
         <div class="nav-previous">
-          <a href="/2019/10/28/使用bitmap来记录flag/" rel="prev"><span class="meta-arraw meta-arraw-left"></span> Older Posts</a>
+          <a href="/2019/11/14/Weekly-share-caoxin-yuhang/" rel="prev"><span class="meta-arraw meta-arraw-left"></span> Older Posts</a>
         </div>
       
       
         <div class="nav-next">
-          <a href="/2019/10/24/FDT-代码学习心得/" rel="prev">Newer Posts <span class="meta-arraw meta-arraw-right"></span></a>
+          <a href="/2019/11/13/使用读写锁实现单例模式/" rel="prev">Newer Posts <span class="meta-arraw meta-arraw-right"></span></a>
         </div>
       
     </div>

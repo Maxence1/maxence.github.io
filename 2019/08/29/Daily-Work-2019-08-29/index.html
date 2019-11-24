@@ -315,8 +315,15 @@
 <li>add UT for order.go</li>
 <li></li>
 </ol>
-<p>const (<br>    NotCancelable = 0<br>    canCancel = 1<br>    canCancelBeforeMexAccept = 2<br>    canCancelAfterMexAccept = 3<br>    canCancelAfterDaxAccept = 4<br>    canCancelAfterDaxCollect = 5</p>
-<p>)<br>func GetCancelablePolicy(ctx context.Context, orderflag int64, order dto.Order) int64 {<br>    if IsSet(orderflag, Concierge) {<br>        return canCancel<br>    }<br>    if IsSet(orderflag, ScheduledOrder) {<br>        if !ucm.GetVariables().EnableSchedulerOrderCancelPolicy {<br>            return NotCancelable<br>        }<br>        if external.GrabX.EnableCancelSOAfterDaxCollect(ctx, order.PaxID, order.CityID){<br>            return canCancelAfterDaxCollect<br>        }<br>        if external.GrabX.EnableCancelSOAfterDaxAccept(ctx, order.PaxID, order.CityID) {<br>            return canCancelAfterDaxAccept<br>        }<br>        if external.GrabX.EnableCancelSOAfterMexAccept(ctx, order.PaxID, order.CityID) {<br>            return canCancelAfterMexAccept<br>        }<br>    }<br>    switch GetOrderFlow(orderflag) {<br>    case SelfPickUp:<br>        return canCancelBeforeMexAccept<br>    case OrderFlowStandardLeadsGen:<br>        countryCode := “”<br>        if order.SnapshotDetail != nil {<br>            countryCode = order.SnapshotDetail.CountryCode<br>        }<br>        if rolloututils.IsStrInStringList(countryCode, ucm.GetVariables().OnlyAllowCancelBeforeMexAcceptCountryForLeadsGen) {<br>            return NotCancelable<br>        }<br>        return canCancelBeforeMexAccept<br>    case OrderFlowDominoHack:<br>        return canCancelBeforeMexAccept<br>    }<br>}</p>
+<p>11.21</p>
+<ol>
+<li>加conflict map</li>
+<li>转移grabx</li>
+<li>改逻辑，checker</li>
+<li>变成私有 isset</li>
+<li>getETA重构</li>
+<li>// For leadsgen hack orders, the auto-accept is always handled by FPI</li>
+</ol>
 
         </div>
       </article>

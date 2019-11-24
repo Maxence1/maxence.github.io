@@ -133,7 +133,13 @@
         </div>
         <!-- Post Main Content -->
         <div class="entry-content has_line_number">
-          
+          <p>大量流量进来之后要注意ASG的加机器的速度够不够快</p>
+<p>60 - 70 加50%d的机器<br>机器预热</p>
+<p>对于geo team， 有一个geoitage，正常来说cpu流量低的时候减机器， 然后发现cpu一会那个超过了某个值，因为机器已经被回收掉了，然后立马开始加机器，<br>就是陷入了机器被回收又被加进来</p>
+<p>连着剪了三台机器，导致CPU就下来了<br>simpleScaliing就是这样， 减完机器给我300s时间再去减下一台，是为了减机器的时候不至于特别快， 减到某个值了发现流量还在就又要加机器</p>
+<p>stepScaling就是保证快点加</p>
+<p>Activity History</p>
+
         </div>
       </article>
     </div>
@@ -150,6 +156,10 @@
     </div>
     <!-- Pre or Next -->
     <div class="nav-links">
+      
+        <div class="nav-previous">
+          <a href="/2019/11/13/使用读写锁实现单例模式/" rel="prev"><span class="meta-arraw meta-arraw-left"></span> Older Posts</a>
+        </div>
       
       
         <div class="nav-next">

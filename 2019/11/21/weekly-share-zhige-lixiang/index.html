@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <!--Description-->
+  
+  <meta name="description" content="This is a blog with my daily thinks.">
+  
+
+  <!--Author-->
+  
+  <meta name="author" content="Pengda Feng">
+  
+
+  <!--Open Graph Title-->
+  
+      <meta property="og:title" content="weekly share @zhige @lixiang">
+  
+  <!--Open Graph Description-->
+  
+      <meta property="og:description" content="This is a blog with my daily thinks.">
+  
+  <!--Open Graph Site Name-->
+  <meta property="og:site_name" content="The IT Crowd">
+  <!--Type page-->
+  
+      <meta property="og:type" content="article">
+  
+  <!--Page Cover-->
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <!-- Title -->
+  
+  <title>weekly share @zhige @lixiang - The IT Crowd</title>
+
+
+  <link rel="shortcut icon" href="https://hexo.io/icon/favicon-96x96.png">
+
+  <!-- Custom CSS/Sass -->
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!----------------------------
+  https://github.com/GallenHu/hexo-theme-Daily
+
+ _____            _   _
+|  __ \          (_) | |
+| |  | |   __ _   _  | |  _   _
+| |  | |  / _` | | | | | | | | |
+| |__| | | (_| | | | | | | |_| |
+|_____/   \__,_| |_| |_|  \__, |
+                          __/ |
+                         |___/
+
+    --------------------------->
+
+</head>
+
+
+<body>
+
+  <!-- Nav -->
+  <header class="site-header">
+  <div class="header-inside">
+    <div class="logo">
+      <a href="/" rel="home">
+        
+      </a>
+    </div>
+    <!-- Navigation -->
+    <nav class="navbar">
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse">
+        <ul class="navbar-nav">
+          
+          
+            <li>
+              <a href="/.">
+                
+                  home
+                
+              </a>
+            </li>
+          
+            <li>
+              <a href="/archives">
+                
+                  archive
+                
+              </a>
+            </li>
+          
+        </ul>
+      </div>
+      <!-- /.navbar-collapse -->
+    </nav>
+    <div class="button-wrap">
+      <button class="menu-toggle">Primary Menu</button>
+    </div>
+  </div>
+</header>
+
+
+  <!-- Main Content -->
+  <div class="content-area">
+  <div class="post">
+    <!-- Post Content -->
+    <div class="container">
+      <article>
+        <!-- Title date & tags -->
+        <div class="post-header">
+          <h1 class="entry-title">
+            weekly share @zhige @lixiang
+            
+          </h1>
+          <p class="posted-on">
+          2019-11-21
+          </p>
+          <div class="tags-links">
+            
+              
+            
+          </div>
+        </div>
+        <!-- Post Main Content -->
+        <div class="entry-content has_line_number">
+          <h2 id="MPA"><a href="#MPA" class="headerlink" title="MPA"></a>MPA</h2><ol>
+<li><p>背景</p>
+<p> 为什么有MPA， 有问题， 商家发现有些订单没有配置， 有些item被抱怨不好吃要退钱， 有时候商家的pos机，各个东西都要向merchant收钱， 要么是给商家钱。<br> 实物没准备好， commission算错了，实物的包装费，OPS要花很多时间做这些事情， 收集信息， 然后portal啥的去做这些事情，通过这些工具做的这些transacction，不走food payment系统， 所以最后数据统计没有办法统计出来， 会影响公司的统计</p>
+<p> <em>MBR merchant business report</em> 每天给merchant发送汇总， 也会包含这些东西， 每条order，挣多少钱什么的</p>
+<p> <em>MSR merchant setltement report</em> 商检转到钱之后通过grabpay的系统变现</p>
+<p> 在这些时候都看不到这些交易，看不到这些adjustment， 所以很confuse</p>
+</li>
+</ol>
+<pre><code>为了提高merchant的满意度，催生了MPA
+
+反馈说，一些OPS需要有csv file能去做menu  payment adjustment， 有些人觉得对账很要命了， 有太多东西要弄， 太累，总之他们就想要一个工具， 有一个集中的点来处理Menu payment adjustment</code></pre><ol start="2">
+<li><p>MPA = Zeus MPA 前段有OPS去上传这些文件<br> OPS的基本流程就是准备CSV文件，里面有merchangtID， name， cityID， orderID， 还有想给钱还是扣钱， 多少钱， desc， catagory<br> 最后做validation的时候都会check这些</p>
+<p> zeus有一个概念， 有人上传就要有人approve，才能继续往前走</p>
+<p> cashier进行payment处理， 有payment状态， 在trx portal会实时地展现出扣钱和退钱， 理想情况下ops就能实时看到成功或者失败</p>
+<p> workflow是等到第二天才会收集汇总状态展现给ops<br> 第二天merchant也可以检查自己的report</p>
+</li>
+</ol>
+<ol start="3">
+<li>flow<br> ren upload-&gt; zeus -&gt; zeus validation 检查文件名， 大小 -&gt; send to cashier -&gt; level2 validation 一行一行处理， validation rule 检查mercahnt、amount、limit、catagory -&gt; 返回zeus结果 -&gt; validation pass -&gt; 等待checker apporve -&gt; cashier 进行payment处理</li>
+</ol>
+<pre><code>第二天
+cashier收集文件里面的所有交易信息， 然后返回zeus， zeus给OPS看一下
+
+order来了之后首先通过cashier， order complete之后call paysi -&gt; grabpay， 在印尼买了一家OVO， 越南买了Moca， 其他国家走的自己的GP -》 Spring是一个记账系统， settlement service会每天把spring的当天的交易进行对账， 如果对账没问题， 触发cashout 提现， 进入到mercahnt的账户（下一天）
+然后商家收到MSR report 交易信息， MBR 订单消息
+
+问题： deduct 是deduct merchant， 比如说pos机不走现金， 我们通过pos deduct 1000块钱，是真的扣。 假的扣： CTC， 和driver相关
+
+问题：如果对账有问题，会生成一些alert， 告诉OPS， 人工去查</code></pre><ol start="4">
+<li><p>状态机<br> MPA task  st new -&gt; level2 validation -&gt; success -&gt; pendding approval -&gt; 这时候上传的人可以撤回 -》 checker approve -&lt; payout pending -&gt; pay out -&gt; 主要是涉及到zeus的UI上面展现， 为了让OPS看的更清楚一些</p>
+<p> validation有两个level， 第一个是在zeus检查， 不涉及内容， 约定文件名 印尼_XX_xx  只支持最大多少M，<br> level2 就是打开文件， 比如说merchantID有没有写的对， city ， merchantName， 钱够不够不会检查， orderID对不对，</p>
+<p> 要求一定在某一时刻才能开始扣钱， 如果他发现你10点才扣。 如果merchant钱包不够， 就扣失败了，现在在做的是允许把merhcant的钱包扣成负数， 这样就不用定时扣钱了。</p>
+</li>
+<li><p>demo<br> zeus.stg-myteski.com</p>
+<p> manual payment adjustment</p>
+<p> zeus -&gt; upload -&gt; pending approve -&gt; pending payout -&gt; </p>
+<p> 一个worker是特定时间执行起来，另一个worker是收集执行结果</p>
+<p> trx系统可以直观的看到merchant信息</p>
+</li>
+</ol>
+<h2 id="Take-Away"><a href="#Take-Away" class="headerlink" title="Take Away"></a>Take Away</h2><pre><code>如果真的没做好也会告诉pax快好了，ETA算的时间是根据这家店平时的时间估算出来的。
+
+问题： 商家8点关门， 7点50下订单，怎么处理？  最晚关店时间就变成8点。 产品说要提醒pax这家店要关门了
+
+商家知道这个订单是不是take away的， 有一个tag
+
+插队问题？ ： 商家一个一个做吗？ 但是去店里的人要排队，所以插了排队的人。 
+
+继续： 用户取到餐了，点击collected food， 收到积分， 评价商家的实物。
+
+
+从商家角度看的话， 收到有take away tag的订单， 可以看到订单的细节， 商家也有compelte按钮，只有在订单备餐完成之后，也就是最晚取餐时间结束之后才能点击cpmplete
+
+food -serach 推荐商家
+cart 改计算promo的逻辑
+om支持flow
+cashier 收费， 积分
+mex 完成订单的按钮， 显示tag
+其他的service， CE\MLT
+
+我们服务的变化： 1. 价格的计算， 没有delivery fee, 不能用delivery的promo
+2. 状态机的变化： 没有FDT
+3. 添加新的推送： 实物准备好了， 用户忘记去取餐的推送
+4. payment: om auth use 
+
+
+首先看一下正常订单的流程
+
+用户和cart交互， 更新购物陈， sig， 创建FPT， 商家接单之后创建FDT，然后booking， 分配司机， 然后司机取食物， 推送到OM, 然后driver complete之后order complete
+
+没有FDT，订单停在Inprepare， takeaway增加了定时任务去触发事件， 商家接单之后不会创建FDT，做一些定时任务， 通知pax取餐、提醒取餐、自动complete
+如果用户完成， call compelte endpoint； 如果用户忘记compelte了， 商家可以complete， 如果都忘了， om的定时任务也会complete
+
+所以order没有excuting， 但是用户能看到excuting， pax做了映射
+
+
+
+### 介绍scheduler
+sqs的限制就是msg最多delay 15min， 怎么半呢再塞回去
+
+检查msg是不是大于15min，如果大于， -15min，再塞回去
+
+用法：
+服务初始化的时候注册你的event和对应的handler， 另外预留的mode字段可以做一些定制化的功能，比如定制每天隔一段时间触发一次。
+metadata可以塞很多东西。 比如发推送的时候
+
+
+ ETA得到的备餐时间， 比如说接单之后， 现在的备餐时间减5分钟， 触发发推送的事情，接单之后2h触发完成事件。</code></pre>
+        </div>
+      </article>
+    </div>
+    <!-- Comments -->
+    <div class="container">
+      
+<section id="comment">
+  <!-- <h1 class="title">Comments</h1> -->
+
+  
+</section>
+
+
+    </div>
+    <!-- Pre or Next -->
+    <div class="nav-links">
+      
+        <div class="nav-previous">
+          <a href="/2019/11/22/Hacker-Code-30-Days/" rel="prev"><span class="meta-arraw meta-arraw-left"></span> Older Posts</a>
+        </div>
+      
+      
+        <div class="nav-next">
+          <a href="/2019/11/21/精华-记录写代码的时候见到的高级写法/" rel="prev">Newer Posts <span class="meta-arraw meta-arraw-right"></span></a>
+        </div>
+      
+    </div>
+
+  </div>
+</div>
+
+
+  <!-- Footer -->
+  <!-- Footer-widgets -->
+<div class="footer-widgets">
+  <div class="row inside-wrapper">
+    <div class="col-1-3">
+      <aside>
+        <h1 class="widget-title"></h1>
+        <div class="custom-widget-content">
+          
+          <p></p>
+        </div>
+      </aside>
+    </div>
+    <div class="col-1-3">
+      <aside>
+        <h1 class="widget-title">Contact</h1>
+        <div class="widget-text">
+          
+            
+              <a href="https://github.com/maxence1" class="icon icon-github" target="_blank">github</a>
+            
+              <a href="http://weibo.com/maxencius" class="icon icon-weibo" target="_blank">weibo</a>
+            
+              <a href="maxence.feng@gmail.com" class="icon icon-mail" target="_blank">mail</a>
+            
+          
+        </div>
+      </aside>
+    </div>
+    <div class="col-1-3">
+      <aside>
+        <h1 class="widget-title">Search</h1>
+        <div class="widget-text">
+          <form onSubmit="return appDaily.submitSearch('')">
+            <p>
+              <input type="text" placeholder="search..." id="homeSearchInput">
+            </p>
+            <!-- <input type="submit" value="GO"> -->
+          </form>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+<!-- Footer -->
+<footer class="site-info">
+  <p>
+    <span>The IT Crowd &copy; 2019</span>
+    
+      <span class="split">|</span>
+      <span>Powered by <a href="https://hexo.io/" target="_blank">Hexo</a> with Theme <a href="https://github.com/GallenHu/hexo-theme-Daily" target="_blank">Daily</a></span>
+    
+  </p>
+</footer>
+
+
+  <!-- After footer scripts -->
+  <!-- scripts -->
+<script src="/js/app.js"></script>
+
+
+
+
+
+</body>
+
+</html>
